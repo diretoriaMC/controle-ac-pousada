@@ -202,6 +202,56 @@
       vertical-align: middle;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── DATA LIMITE ── */
+    .data-limite-box {
+      background: #EFF4FB;
+      border: 1.5px solid #2E75B6;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1F3864;
+    }
+    .data-limite-box.vencida {
+      background: #fff3f3;
+      border-color: #e53935;
+      color: #c62828;
+    }
+    .data-limite-box.urgente {
+      background: #fff8e1;
+      border-color: #f57c00;
+      color: #e65100;
+    }
+
+    /* ── SELEÇÃO DE STATUS ── */
+    .status-opcoes {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .status-opt {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1.5px solid #d0d8e4;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      transition: border-color .2s, background .2s;
+    }
+    .status-opt input[type="radio"] {
+      width: 20px; height: 20px;
+      accent-color: #1F3864;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .status-opt:has(input:checked) {
+      border-color: #1F3864;
+      background: #EFF4FB;
+    }
   </style>
 </head>
 <body>
@@ -226,9 +276,7 @@
   </div>
 
   <!-- Mensagem de erro (oculta por padrão) -->
-  <div class="msg-erro" id="msg-erro">
-    ⚠️ Erro ao enviar. Verifique sua conexão e tente novamente.
-  </div>
+  <div class="msg-erro" id="msg-erro"></div>
 
   <form id="form-manutencao" novalidate>
 
@@ -236,65 +284,70 @@
     <div class="form-section">
       <h3>🔧 Dados da Manutenção</h3>
 
-      <div class="field-row">
-        <div class="field">
-          <label>Data da manutenção<span class="req">*</span></label>
-          <input type="date" id="data_manutencao" name="data_manutencao" required>
+      <!-- Datas limite (somente leitura) -->
+      <div class="field">
+        <label>📅 Data limite para manutenção</label>
+        <div id="data-limite-box" class="data-limite-box">—</div>
+      </div>
+
+      <div class="field">
+        <label>🧹 Data limite para limpeza de filtro</label>
+        <div id="data-filtro-box" class="data-limite-box">—</div>
+      </div>
+
+      <!-- Status da manutenção -->
+      <div class="field">
+        <label>Manutenção realizada?<span class="req">*</span></label>
+        <div class="status-opcoes">
+          <label class="status-opt" id="opt-sim">
+            <input type="radio" name="realizada" value="sim" id="radio-sim" onchange="onStatusChange()">
+            <span>✅ Sim, foi realizada</span>
+          </label>
+          <label class="status-opt" id="opt-nao">
+            <input type="radio" name="realizada" value="nao" id="radio-nao" onchange="onStatusChange()">
+            <span>❌ Não foi realizada</span>
+          </label>
         </div>
+      </div>
+
+      <!-- Campos extras — aparecem só quando "Sim" -->
+      <div id="campos-realizacao" style="display:none">
+
         <div class="field">
-          <label>Próxima manutenção<span class="req">*</span></label>
-          <input type="date" id="proxima_manutencao" name="proxima_manutencao" required>
+          <label>Tipo de manutenção<span class="req">*</span></label>
+          <select id="tipo_manutencao" name="tipo_manutencao">
+            <option value="">Selecione…</option>
+            <option>Preventiva</option>
+            <option>Corretiva</option>
+            <option>Limpeza de filtro</option>
+            <option>Limpeza geral</option>
+            <option>Troca de filtro</option>
+            <option>Recarga de gás</option>
+            <option>Reparo elétrico</option>
+            <option>Substituição de peça</option>
+            <option>Revisão geral</option>
+          </select>
         </div>
+
+        <div class="field">
+          <label>Descrição do serviço<span class="req">*</span></label>
+          <textarea id="descricao" name="descricao"
+            placeholder="Descreva o que foi feito…"></textarea>
+        </div>
+
       </div>
 
-      <div class="field">
-        <label>Tipo de manutenção<span class="req">*</span></label>
-        <select id="tipo_manutencao" name="tipo_manutencao" required>
-          <option value="">Selecione…</option>
-          <option>Preventiva</option>
-          <option>Corretiva</option>
-          <option>Limpeza</option>
-          <option>Troca de filtro</option>
-          <option>Recarga de gás</option>
-          <option>Reparo elétrico</option>
-          <option>Substituição de peça</option>
-          <option>Revisão geral</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>Descrição do serviço<span class="req">*</span></label>
-        <textarea id="descricao" name="descricao" required
-          placeholder="Descreva o que foi feito…"></textarea>
-      </div>
-
-      <div class="field">
+      <!-- Motivo — aparece só quando "Não" -->
+      <div id="campos-nao-realizacao" style="display:none">
+        <div class="field">
+          <label>Motivo<span class="req">*</span></label>
+          <textarea id="motivo_nao" name="motivo_nao"
+            placeholder="Explique o motivo pelo qual a manutenção não foi realizada…"></textarea>
+        </div>
+      </div>      <div class="field">
         <label>Peças trocadas</label>
         <input type="text" id="pecas" name="pecas"
           placeholder="Ex: Filtro de ar, capacitor… ou deixe em branco">
-      </div>
-
-      <div class="field">
-        <label>Custo (R$)</label>
-        <input type="number" id="custo" name="custo"
-          placeholder="0,00" min="0" step="0.01">
-      </div>
-    </div>
-
-    <!-- Seção: Técnico -->
-    <div class="form-section">
-      <h3>👷 Técnico Responsável</h3>
-
-      <div class="field">
-        <label>Nome do técnico<span class="req">*</span></label>
-        <input type="text" id="tecnico" name="tecnico" required
-          placeholder="Nome completo">
-      </div>
-
-      <div class="field">
-        <label>Empresa / Prestadora</label>
-        <input type="text" id="empresa" name="empresa"
-          placeholder="Nome da empresa (opcional)">
       </div>
 
       <div class="field">
@@ -321,14 +374,16 @@
   <button class="btn-nova" onclick="location.reload()">Registrar outra</button>
 </div>
 
+
 <script>
 // ─────────────────────────────────────────────
-// CONFIGURAÇÃO — ajuste estas duas linhas
+// CONFIGURAÇÃO
 // ─────────────────────────────────────────────
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwcbDQDbgBSUncvq85RzPtxcWWxHg_BL_a9KvyVDAbKN8T7Ps7JMhCx8n1Mr5WgSgXSCQ/exec';
 const EMAIL_NOTIFICACAO = 'diretoria@pousadamarieclaire.com';
 // ─────────────────────────────────────────────
 
+// Catálogo de equipamentos (gerado automaticamente)
 const EQUIPAMENTOS = {
   'AC-001': { local: 'Quarto 01', tipo: 'Quarto', marca: 'LG', modelo: 'Dual Inverter 12k', btus: 9000 },
   'AC-002': { local: 'Quarto 02', tipo: 'Quarto', marca: 'Samsung', modelo: 'WindFree 9k', btus: 12000 },
@@ -384,10 +439,58 @@ const EQUIPAMENTOS = {
   'AC-052': { local: 'Corredor 2', tipo: 'Área Comum', marca: 'Midea', modelo: 'Springer 18k', btus: 9000 },
   'AC-053': { local: 'Administração', tipo: 'Área Comum', marca: 'Midea', modelo: 'Springer 18k', btus: 24000 },
 };
+// ── Helpers de data ──
+const hoje = new Date();
+hoje.setHours(0,0,0,0);
 
+function isoParaDate(iso) {
+  const [y,m,d] = iso.split('-');
+  return new Date(+y, +m-1, +d);
+}
+function dateParaIso(d) {
+  return d.toISOString().split('T')[0];
+}
+function fmt(iso) {
+  const [y,m,d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+}
+
+// ── Preencher card do equipamento ──
 const params  = new URLSearchParams(window.location.search);
 const equipId = (params.get('id') || '').toUpperCase();
 const equip   = EQUIPAMENTOS[equipId];
+
+// Parâmetros de datas vindos da URL
+// ?ultima=YYYY-MM-DD  → data da última manutenção geral
+// ?filtro=YYYY-MM-DD  → data da última limpeza de filtro
+const ultimaParam  = params.get('ultima');
+const filtroParam  = params.get('filtro');
+
+const ultimaData = ultimaParam ? isoParaDate(ultimaParam) : (() => {
+  const d = new Date(hoje); d.setMonth(d.getMonth() - 6); return d;
+})();
+const filtroData = filtroParam ? isoParaDate(filtroParam) : (() => {
+  const d = new Date(hoje); d.setDate(d.getDate() - 14); return d;
+})();
+
+// Data limite manutenção = última + 6 meses
+const dataLimite = new Date(ultimaData);
+dataLimite.setMonth(dataLimite.getMonth() + 6);
+const dataLimiteIso = dateParaIso(dataLimite);
+
+// Data limite limpeza de filtro = última limpeza + 14 dias
+const dataFiltroLimite = new Date(filtroData);
+dataFiltroLimite.setDate(dataFiltroLimite.getDate() + 14);
+const dataFiltroLimiteIso = dateParaIso(dataFiltroLimite);
+
+// Próximas datas após realização
+const proximaAposRealizacao = new Date(hoje);
+proximaAposRealizacao.setMonth(proximaAposRealizacao.getMonth() + 6);
+const proximaIso = dateParaIso(proximaAposRealizacao);
+
+const proximoFiltroAposLimpeza = new Date(hoje);
+proximoFiltroAposLimpeza.setDate(proximoFiltroAposLimpeza.getDate() + 14);
+const proximoFiltroIso = dateParaIso(proximoFiltroAposLimpeza);
 
 if (equip) {
   document.getElementById('equip-id').textContent    = equipId;
@@ -401,19 +504,66 @@ if (equip) {
   document.getElementById('equip-local').textContent = 'Verifique se o QR Code está correto.';
 }
 
-const hoje = new Date();
-const dataHoje = hoje.toISOString().split('T')[0];
-document.getElementById('data_manutencao').value = dataHoje;
-const proxima = new Date(hoje);
-proxima.setMonth(proxima.getMonth() + 6);
-document.getElementById('proxima_manutencao').value = proxima.toISOString().split('T')[0];
+// ── Helper para exibir box de data com alerta ──
+function exibirBoxData(elId, dataAlvo, limiteUrgente) {
+  const box = document.getElementById(elId);
+  const iso = dateParaIso(dataAlvo);
+  const dias = Math.round((dataAlvo - hoje) / 86400000);
+  let label = '';
+  if (dias < 0) {
+    box.classList.add('vencida');
+    label = ` · ⛔ VENCIDA há ${Math.abs(dias)} dia(s)`;
+  } else if (dias <= limiteUrgente) {
+    box.classList.add('urgente');
+    label = ` · ⚠️ ${dias} dia(s) restante(s)`;
+  } else {
+    label = ` · ✅ ${dias} dia(s) restante(s)`;
+  }
+  box.textContent = fmt(iso) + label;
+}
 
+exibirBoxData('data-limite-box',  dataLimite,       30);
+exibirBoxData('data-filtro-box',  dataFiltroLimite,  3);
+
+// ── Mostrar/ocultar campos conforme seleção ──
+function onStatusChange() {
+  const realizada = document.querySelector('input[name="realizada"]:checked')?.value;
+  document.getElementById('campos-realizacao').style.display    = realizada === 'sim' ? 'block' : 'none';
+  document.getElementById('campos-nao-realizacao').style.display = realizada === 'nao' ? 'block' : 'none';
+}
+
+// ── Envio do formulário ──
 function enviarFormulario() {
   const msgErro = document.getElementById('msg-erro');
   msgErro.style.display = 'none';
-  const campos = ['data_manutencao','proxima_manutencao','tipo_manutencao','descricao','tecnico'];
-  for (const c of campos) {
-    const el = document.getElementById(c);
+
+  const realizada = document.querySelector('input[name="realizada"]:checked')?.value;
+  if (!realizada) {
+    msgErro.textContent = '⚠️ Selecione se a manutenção foi realizada ou não.';
+    msgErro.style.display = 'block';
+    document.getElementById('opt-sim').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  if (realizada === 'sim') {
+    const obrigatorios = [
+      { id: 'tipo_manutencao', label: 'Tipo de manutenção' },
+      { id: 'descricao',       label: 'Descrição do serviço' },
+    ];
+    for (const f of obrigatorios) {
+      const el = document.getElementById(f.id);
+      if (!el.value.trim()) {
+        el.style.borderColor = '#e53935';
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.focus();
+        return;
+      }
+      el.style.borderColor = '';
+    }
+  }
+
+  if (realizada === 'nao') {
+    const el = document.getElementById('motivo_nao');
     if (!el.value.trim()) {
       el.style.borderColor = '#e53935';
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -422,35 +572,46 @@ function enviarFormulario() {
     }
     el.style.borderColor = '';
   }
+
   const btn = document.getElementById('btn-enviar');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>Enviando…';
+
+  const dataHoje = dateParaIso(hoje);
+  const tipoSelecionado = realizada === 'sim' ? document.getElementById('tipo_manutencao').value : '—';
+  const ehLimpezaFiltro = tipoSelecionado === 'Limpeza de filtro';
+
   const payload = {
-    equipamento_id: equipId,
-    local: equip ? equip.local : '—',
-    data_manutencao: document.getElementById('data_manutencao').value,
-    proxima_manutencao: document.getElementById('proxima_manutencao').value,
-    tipo_manutencao: document.getElementById('tipo_manutencao').value,
-    descricao: document.getElementById('descricao').value.trim(),
-    tecnico: document.getElementById('tecnico').value.trim(),
-    empresa: document.getElementById('empresa').value.trim() || '—',
-    pecas: document.getElementById('pecas').value.trim() || '—',
-    custo: document.getElementById('custo').value || '0',
-    observacoes: document.getElementById('observacoes').value.trim() || '—',
-    email_notificacao: EMAIL_NOTIFICACAO,
+    equipamento_id:           equipId,
+    local:                    equip ? equip.local : '—',
+    realizada:                realizada,
+    data_manutencao:          realizada === 'sim' ? dataHoje : '—',
+    proxima_manutencao:       realizada === 'sim' ? proximaIso : dataLimiteIso,
+    proxima_limpeza_filtro:   ehLimpezaFiltro ? proximoFiltroIso : dataFiltroLimiteIso,
+    tipo_manutencao:          tipoSelecionado,
+    descricao:                realizada === 'sim' ? document.getElementById('descricao').value.trim() : '—',
+    motivo_nao:               realizada === 'nao' ? document.getElementById('motivo_nao').value.trim() : '—',
+    pecas:                    document.getElementById('pecas')?.value.trim() || '—',
+    observacoes:              document.getElementById('observacoes').value.trim() || '—',
+    email_notificacao:        EMAIL_NOTIFICACAO,
   };
+
   fetch(SCRIPT_URL, {
-    method: 'POST',
+    method:  'POST',
     headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify(payload),
+    body:    JSON.stringify(payload),
   })
   .then(r => r.json())
   .then(resp => {
-    if (resp.status === 'ok') { mostrarSucesso(payload); }
-    else { throw new Error(resp.msg || 'Erro desconhecido'); }
+    if (resp.status === 'ok') {
+      mostrarSucesso(payload);
+    } else {
+      throw new Error(resp.msg || 'Erro desconhecido');
+    }
   })
   .catch(err => {
     console.error(err);
+    msgErro.textContent = '⚠️ Erro ao enviar. Verifique sua conexão e tente novamente.';
     msgErro.style.display = 'block';
     btn.disabled = false;
     btn.innerHTML = '✅ Registrar Manutenção';
@@ -461,12 +622,22 @@ function mostrarSucesso(p) {
   document.getElementById('tela-form').style.display = 'none';
   const tela = document.getElementById('tela-sucesso');
   tela.style.display = 'block';
-  const fmt = iso => { const [y,m,d] = iso.split('-'); return `${d}/${m}/${y}`; };
-  document.getElementById('sucesso-detalhe').innerHTML =
-    `<strong>${equipId} · ${p.local}</strong><br><br>` +
-    `🔧 ${p.tipo_manutencao} em ${fmt(p.data_manutencao)}<br>` +
-    `📅 Próxima manutenção: <strong>${fmt(p.proxima_manutencao)}</strong><br><br>` +
-    `Um e-mail de confirmação foi enviado para a pousada.`;
+
+  let detalhe = `<strong>${equipId} · ${p.local}</strong><br><br>`;
+  if (p.realizada === 'sim') {
+    detalhe +=
+      `🔧 ${p.tipo_manutencao} realizada em ${fmt(p.data_manutencao)}<br>` +
+      `📅 Próxima manutenção: <strong>${fmt(p.proxima_manutencao)}</strong><br>` +
+      `🧹 Próxima limpeza de filtro: <strong>${fmt(p.proxima_limpeza_filtro)}</strong><br><br>` +
+      `Um e-mail de confirmação foi enviado para a pousada.`;
+  } else {
+    detalhe +=
+      `ℹ️ Manutenção não realizada.<br>` +
+      `📅 Data limite manutenção: <strong>${fmt(p.proxima_manutencao)}</strong><br>` +
+      `🧹 Data limite limpeza de filtro: <strong>${fmt(p.proxima_limpeza_filtro)}</strong><br><br>` +
+      `A pousada foi notificada.`;
+  }
+  document.getElementById('sucesso-detalhe').innerHTML = detalhe;
 }
 </script>
 </body>
