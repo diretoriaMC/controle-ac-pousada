@@ -309,6 +309,673 @@
 
           <label class="opcao-card" id="opt-interna">
             <input type="radio" name="tipo_limpeza" value="Limpeza Interna" id="radio-interna" onchange="onTipoChange()">
+            <span class="opcao-icone">🚿</span>
+            <span class="opcao-texto">
+              <span class="opcao-titulo">Limpeza Interna</span>
+              <span class="opcao-desc">Limpeza completa do equipamento · atualiza prazo de 6 meses</span>
+            </span>
+          </label>
+
+          <label class="opcao-card" id="opt-externa">
+            <input type="radio" name="tipo_limpeza" value="Limpeza Externa" id="radio-externa" onchange="onTipoChange()">
+            <span class="opcao-icone">🧻</span>
+            <span class="opcao-texto">
+              <span class="opcao-titulo">Limpeza Externa</span>
+              <span class="opcao-desc">Limpeza do filtro / parte externa · atualiza prazo de 14 dias</span>
+            </span>
+          </label>
+
+          <label class="opcao-card" id="opt-outra">
+            <input type="radio" name="tipo_limpeza" value="Outra" id="radio-outra" onchange="onTipoChange()">
+            <span class="opcao-icone">🛠️</span>
+            <span class="opcao-texto">
+              <span class="opcao-titulo">Outra manutenção</span>
+              <span class="opcao-desc">Corretiva, reparo, recarga de gás etc. · registra no histórico</span>
+            </span>
+          </label>
+
+        </div>
+      </div>
+
+      <!-- Campo "O que foi feito?" → aparece para Outra -->
+      <div id="campos-outra" style="display:none">
+        <div class="field">
+          <label>O que foi feito?<span class="req">*</span></label>
+          <input type="text" id="descricao_outra" name="descricao_outra"
+            placeholder="Ex: Recarga de gás, reparo no compressor…">
+        </div>
+      </div>
+
+      <!-- Campo Descrição → aparece para Limpeza Interna e Limpeza Externa -->
+      <div id="campos-limpeza" style="display:none">
+        <div class="field">
+          <label>Observações da limpeza</label>
+          <textarea id="descricao_limpeza" name="descricao_limpeza"
+            placeholder="Descreva o que foi feito, condições encontradas…"></textarea>
+        </div>
+      </div>
+
+      <!-- Campos comuns -->
+      <div id="campos-comuns" style="display:none">
+        <div class="field">
+          <label>Peças trocadas</label>
+          <input type="text" id="pecas" name="pecas"
+            placeholder="Ex: Filtro de ar, capacitor… ou deixe em branco">
+        </div>
+
+        <div class="field">
+          <label>Observações adicionais</label>
+          <textarea id="observacoes" name="observacoes"
+            placeholder="Algo importante a registrar…"></textarea>
+        </div>
+      </div>
+
+    </div>
+
+  </form>
+
+  <button class="btn-submit" id="btn-enviar" onclick="enviarFormulario()">
+    ✅ Registrar Manutenção
+  </button>
+
+</div><!-- /tela-form -->
+
+
+<!-- ====== TELA DE SUCESSO ====== -->
+<div id="tela-sucesso">
+  <div class="sucesso-icon">✅</div>
+  <div class="sucesso-titulo" id="sucesso-titulo">Manutenção registrada!</div>
+  <div class="sucesso-msg" id="sucesso-detalhe"></div>
+  <button class="btn-nova" onclick="location.reload()">Registrar outra manutenção</button>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// CONFIGURAÇÃO
+// ─────────────────────────────────────────────
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwcbDQDbgBSUncvq85RzPtxcWWxHg_BL_a9KvyVDAbKN8T7Ps7JMhCx8n1Mr5WgSgXSCQ/exec';
+const EMAIL_NOTIFICACAO = 'diretoria@pousadamarieclaire.com';
+// ─────────────────────────────────────────────
+
+// Catálogo de equipamentos (gerado automaticamente)
+const EQUIPAMENTOS = {
+  'AC-001': { local: 'Quarto 01', tipo: 'Quarto', marca: 'LG', modelo: 'Dual Inverter 12k', btus: 9000 },
+  'AC-002': { local: 'Quarto 02', tipo: 'Quarto', marca: 'Samsung', modelo: 'WindFree 9k', btus: 12000 },
+  'AC-003': { local: 'Quarto 03', tipo: 'Quarto', marca: 'Daikin', modelo: 'Inverter 24k', btus: 9000 },
+  'AC-004': { local: 'Quarto 04', tipo: 'Quarto', marca: 'LG', modelo: 'Dual Inverter 12k', btus: 9000 },
+  'AC-005': { local: 'Quarto 05', tipo: 'Quarto', marca: 'Samsung', modelo: 'WindFree 9k', btus: 9000 },
+  'AC-006': { local: 'Quarto 06', tipo: 'Quarto', marca: 'Daikin', modelo: 'Inverter 24k', btus: 24000 },
+  'AC-007': { local: 'Quarto 07', tipo: 'Quarto', marca: 'Daikin', modelo: 'Inverter 24k', btus: 18000 },
+  'AC-008': { local: 'Quarto 08', tipo: 'Quarto', marca: 'Gree', modelo: 'Eco Garden 12k', btus: 18000 },
+  'AC-009': { local: 'Quarto 09', tipo: 'Quarto', marca: 'Samsung', modelo: 'WindFree 9k', btus: 18000 },
+  'AC-010': { local: 'Quarto 10', tipo: 'Quarto', marca: 'Gree', modelo: 'Eco Garden 12k', btus: 9000 },
+  'AC-011': { local: 'Quarto 11', tipo: 'Quarto', marca: 'Daikin', modelo: 'Inverter 24k', btus: 18000 },
+  'AC-012': { local: 'Quarto 12', tipo: 'Quarto', marca: 'Daikin', modelo: 'Inverter 24k', btus: 9000 },
+  'AC-013': { local: 'Quarto 13', tipo: 'Quarto', marca: 'Daikin', modelo: 'Inverter 24k', btus: 18000 },
+  'AC-014': { local: 'Quarto 14', tipo: 'Quarto', marca: 'Midea', modelo: 'Springer 18k', btus: 12000 },
+  'AC-015': { local: 'Quarto 15', tipo: 'Quarto', marca: 'LG', modelo: 'Dual Inverter 12k', btus: 12000 },
+  'AC-016': { local: 'Quarto 16', tipo: 'Quarto', marca: 'Samsung', modelo: 'WindFree 9k', btus: 9000 },
+  'AC-017': { local: 'Quarto 17', tipo: 'Quarto', marca: 'Gree', modelo: 'Eco Garden 12k', btus: 18000 },
+  'AC-018': { local: 'Quarto 18', tipo: 'Quarto', marca: 'Midea', modelo: 'Springer 18k', btus: 12000 },
+  'AC-019': { local: 'Quarto 19', tipo: 'Quarto', marca: 'LG', modelo: 'Dual Inverter 12k', btus: 12000 },
+  'AC-020': { local: 'Quarto 20', tipo: 'Quarto', marca: 'Samsung', modelo: 'WindFree 9k', btus: 24000 },
+  'AC-021': { local: 'Quarto 21', tipo: 'Quarto', marca: 'Daikin', modelo: 'Inverter 24k', btus: 12000 },
+  'AC-022': { local: 'Quarto 22', tipo: 'Quarto', marca: 'LG', modelo: 'Dual Inverter 12k', btus: 12000 },
+  'AC-023': { local: 'Quarto 23', tipo: 'Quarto', marca: 'Gree', modelo: 'Eco Garden 12k', btus: 18000 },
+  'AC-024': { local: 'Quarto 24', tipo: 'Quarto', marca: 'Daikin', modelo: 'Inverter 24k', btus: 18000 },
+  'AC-025': { local: 'Quarto 25', tipo: 'Quarto', marca: 'Gree', modelo: 'Eco Garden 12k', btus: 24000 },
+  'AC-026': { local: 'Quarto 26', tipo: 'Quarto', marca: 'Samsung', modelo: 'WindFree 9k', btus: 18000 },
+  'AC-027': { local: 'Quarto 27', tipo: 'Quarto', marca: 'Daikin', modelo: 'Inverter 24k', btus: 18000 },
+  'AC-028': { local: 'Quarto 28', tipo: 'Quarto', marca: 'Gree', modelo: 'Eco Garden 12k', btus: 24000 },
+  'AC-029': { local: 'Quarto 29', tipo: 'Quarto', marca: 'Samsung', modelo: 'WindFree 9k', btus: 24000 },
+  'AC-030': { local: 'Quarto 30', tipo: 'Quarto', marca: 'LG', modelo: 'Dual Inverter 12k', btus: 12000 },
+  'AC-031': { local: 'Quarto 31', tipo: 'Quarto', marca: 'Gree', modelo: 'Eco Garden 12k', btus: 9000 },
+  'AC-032': { local: 'Quarto 32', tipo: 'Quarto', marca: 'Daikin', modelo: 'Inverter 24k', btus: 24000 },
+  'AC-033': { local: 'Quarto 33', tipo: 'Quarto', marca: 'Daikin', modelo: 'Inverter 24k', btus: 9000 },
+  'AC-034': { local: 'Quarto 34', tipo: 'Quarto', marca: 'Daikin', modelo: 'Inverter 24k', btus: 18000 },
+  'AC-035': { local: 'Quarto 35', tipo: 'Quarto', marca: 'LG', modelo: 'Dual Inverter 12k', btus: 18000 },
+  'AC-036': { local: 'Quarto 36', tipo: 'Quarto', marca: 'Gree', modelo: 'Eco Garden 12k', btus: 9000 },
+  'AC-037': { local: 'Quarto 37', tipo: 'Quarto', marca: 'Daikin', modelo: 'Inverter 24k', btus: 12000 },
+  'AC-038': { local: 'Quarto 38', tipo: 'Quarto', marca: 'Midea', modelo: 'Springer 18k', btus: 12000 },
+  'AC-039': { local: 'Quarto 39', tipo: 'Quarto', marca: 'Samsung', modelo: 'WindFree 9k', btus: 9000 },
+  'AC-040': { local: 'Quarto 40', tipo: 'Quarto', marca: 'Gree', modelo: 'Eco Garden 12k', btus: 9000 },
+  'AC-041': { local: 'Quarto 41', tipo: 'Quarto', marca: 'Midea', modelo: 'Springer 18k', btus: 12000 },
+  'AC-042': { local: 'Quarto 42', tipo: 'Quarto', marca: 'Daikin', modelo: 'Inverter 24k', btus: 9000 },
+  'AC-043': { local: 'Quarto 43', tipo: 'Quarto', marca: 'LG', modelo: 'Dual Inverter 12k', btus: 12000 },
+  'AC-044': { local: 'Quarto 44', tipo: 'Quarto', marca: 'Daikin', modelo: 'Inverter 24k', btus: 12000 },
+  'AC-045': { local: 'Quarto 45', tipo: 'Quarto', marca: 'Daikin', modelo: 'Inverter 24k', btus: 24000 },
+  'AC-046': { local: 'Recepção', tipo: 'Área Comum', marca: 'Samsung', modelo: 'WindFree 9k', btus: 18000 },
+  'AC-047': { local: 'Restaurante', tipo: 'Área Comum', marca: 'Midea', modelo: 'Springer 18k', btus: 24000 },
+  'AC-048': { local: 'Área de Piscina', tipo: 'Área Comum', marca: 'LG', modelo: 'Dual Inverter 12k', btus: 12000 },
+  'AC-049': { local: 'Salão de Eventos', tipo: 'Área Comum', marca: 'Midea', modelo: 'Springer 18k', btus: 9000 },
+  'AC-050': { local: 'Academia', tipo: 'Área Comum', marca: 'Samsung', modelo: 'WindFree 9k', btus: 12000 },
+  'AC-051': { local: 'Corredor 1', tipo: 'Área Comum', marca: 'LG', modelo: 'Dual Inverter 12k', btus: 12000 },
+  'AC-052': { local: 'Corredor 2', tipo: 'Área Comum', marca: 'Midea', modelo: 'Springer 18k', btus: 9000 },
+  'AC-053': { local: 'Administração', tipo: 'Área Comum', marca: 'Midea', modelo: 'Springer 18k', btus: 24000 },
+};
+
+// ── Helpers de data ──
+const hoje = new Date();
+hoje.setHours(0,0,0,0);
+
+function isoParaDate(iso) {
+  const [y,m,d] = iso.split('-');
+  return new Date(+y, +m-1, +d);
+}
+function dateParaIso(d) {
+  return d.toISOString().split('T')[0];
+}
+function fmt(iso) {
+  const [y,m,d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+}
+
+// ── Preencher card do equipamento ──
+const params  = new URLSearchParams(window.location.search);
+const equipId = (params.get('id') || '').toUpperCase();
+const equip   = EQUIPAMENTOS[equipId];
+
+// Parâmetros de datas vindos da URL
+const ultimaParam = params.get('ultima');
+const filtroParam = params.get('filtro');
+
+const ultimaData = ultimaParam ? isoParaDate(ultimaParam) : (() => {
+  const d = new Date(hoje); d.setMonth(d.getMonth() - 6); return d;
+})();
+const filtroData = filtroParam ? isoParaDate(filtroParam) : (() => {
+  const d = new Date(hoje); d.setDate(d.getDate() - 14); return d;
+})();
+
+// Próxima Limpeza Interna = última + 6 meses
+const proximaInterna = new Date(ultimaData);
+proximaInterna.setMonth(proximaInterna.getMonth() + 6);
+const proximaInternaIso = dateParaIso(proximaInterna);
+
+// Próxima Limpeza Externa = última + 14 dias
+const proximaExterna = new Date(filtroData);
+proximaExterna.setDate(proximaExterna.getDate() + 14);
+const proximaExternaIso = dateParaIso(proximaExterna);
+
+// Próximas datas APÓS realização hoje
+const novaProximaInterna = new Date(hoje);
+novaProximaInterna.setMonth(novaProximaInterna.getMonth() + 6);
+const novaProximaInternaIso = dateParaIso(novaProximaInterna);
+
+const novaProximaExterna = new Date(hoje);
+novaProximaExterna.setDate(novaProximaExterna.getDate() + 14);
+const novaProximaExternaIso = dateParaIso(novaProximaExterna);
+
+const dataHoje = dateParaIso(hoje);
+
+if (equip) {
+  document.getElementById('equip-id').textContent    = equipId;
+  document.getElementById('equip-local').textContent = equip.local + ' · ' + equip.tipo;
+  document.getElementById('equip-badges').innerHTML  =
+    `<span class="badge">🏷️ ${equip.marca}</span>` +
+    `<span class="badge">📐 ${equip.modelo}</span>` +
+    `<span class="badge">❄️ ${equip.btus.toLocaleString('pt-BR')} BTUs</span>`;
+} else {
+  document.getElementById('equip-id').textContent    = 'Equipamento não identificado';
+  document.getElementById('equip-local').textContent = 'Verifique se o QR Code está correto.';
+}
+
+// ── Helper para exibir box de data com alerta ──
+function exibirBoxData(elId, dataAlvo, limiteUrgente) {
+  const box = document.getElementById(elId);
+  const iso = dateParaIso(dataAlvo);
+  const dias = Math.round((dataAlvo - hoje) / 86400000);
+  let label = '';
+  if (dias < 0) {
+    box.classList.add('vencida');
+    label = ` · ⛔ VENCIDA há ${Math.abs(dias)} dia(s)`;
+  } else if (dias <= limiteUrgente) {
+    box.classList.add('urgente');
+    label = ` · ⚠️ ${dias} dia(s) restante(s)`;
+  } else {
+    label = ` · ✅ ${dias} dia(s) restante(s)`;
+  }
+  box.textContent = fmt(iso) + label;
+}
+
+exibirBoxData('data-limite-box', proximaInterna,  30);
+exibirBoxData('data-filtro-box', proximaExterna,   3);
+
+// ── Mostrar/ocultar campos conforme seleção ──
+function onTipoChange() {
+  const tipo = document.querySelector('input[name="tipo_limpeza"]:checked')?.value;
+  document.getElementById('campos-outra').style.display   = tipo === 'Outra'          ? 'block' : 'none';
+  document.getElementById('campos-limpeza').style.display = (tipo === 'Limpeza Interna' || tipo === 'Limpeza Externa') ? 'block' : 'none';
+  document.getElementById('campos-comuns').style.display  = tipo ? 'block' : 'none';
+}
+
+// ── Envio do formulário ──
+function enviarFormulario() {
+  const msgErro = document.getElementById('msg-erro');
+  msgErro.style.display = 'none';
+
+  const tipo = document.querySelector('input[name="tipo_limpeza"]:checked')?.value;
+  if (!tipo) {
+    msgErro.textContent = '⚠️ Selecione que tipo de manutenção foi realizada.';
+    msgErro.style.display = 'block';
+    document.getElementById('opt-interna').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  // Validar campo obrigatório para "Outra"
+  if (tipo === 'Outra') {
+    const el = document.getElementById('descricao_outra');
+    if (!el.value.trim()) {
+      el.style.borderColor = '#e53935';
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.focus();
+      return;
+    }
+    el.style.borderColor = '';
+  }
+
+  // Loading
+  const btn = document.getElementById('btn-enviar');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Enviando…';
+
+  // Determinar datas a atualizar conforme tipo
+  let dataLimpezaInterna    = '—';
+  let novaProxInternaEnvio  = proximaInternaIso;
+  let dataLimpezaExterna    = '—';
+  let novaProxExternaEnvio  = proximaExternaIso;
+
+  if (tipo === 'Limpeza Interna') {
+    dataLimpezaInterna   = dataHoje;
+    novaProxInternaEnvio = novaProximaInternaIso;
+  } else if (tipo === 'Limpeza Externa') {
+    dataLimpezaExterna   = dataHoje;
+    novaProxExternaEnvio = novaProximaExternaIso;
+  }
+
+  const descricaoLimpeza = document.getElementById('descricao_limpeza')?.value.trim() || '—';
+  const descricaoOutra   = document.getElementById('descricao_outra')?.value.trim()   || '—';
+  const descricaoFinal   = tipo === 'Outra' ? descricaoOutra : (descricaoLimpeza || '—');
+
+  const payload = {
+    equipamento_id:          equipId,
+    local:                   equip ? equip.local : '—',
+    tipo_limpeza:            tipo,
+    data_limpeza_interna:    dataLimpezaInterna,
+    proxima_limpeza_interna: novaProxInternaEnvio,
+    data_limpeza_externa:    dataLimpezaExterna,
+    proxima_limpeza_externa: novaProxExternaEnvio,
+    descricao:               descricaoFinal,
+    pecas:                   document.getElementById('pecas')?.value.trim()        || '—',
+    observacoes:             document.getElementById('observacoes')?.value.trim()  || '—',
+    email_notificacao:       EMAIL_NOTIFICACAO,
+  };
+
+  // Enviar para Google Apps Script
+  fetch(SCRIPT_URL, {
+    method:  'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body:    JSON.stringify(payload),
+  })
+  .then(r => r.json())
+  .then(resp => {
+    if (resp.status === 'ok') {
+      mostrarSucesso(payload);
+    } else {
+      throw new Error(resp.msg || 'Erro desconhecido');
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    msgErro.textContent = '⚠️ Erro ao enviar. Verifique sua conexão e tente novamente.';
+    msgErro.style.display = 'block';
+    btn.disabled = false;
+    btn.innerHTML = '✅ Registrar Manutenção';
+  });
+}
+
+function mostrarSucesso(p) {
+  document.getElementById('tela-form').style.display = 'none';
+  const tela = document.getElementById('tela-sucesso');
+  tela.style.display = 'block';
+
+  let titulo  = 'Manutenção registrada!';
+  let detalhe = `<strong>${equipId} · ${p.local}</strong><br><br>`;
+
+  if (p.tipo_limpeza === 'Limpeza Interna') {
+    titulo   = 'Limpeza Interna registrada!';
+    detalhe +=
+      `🔧 Limpeza Interna realizada em ${fmt(dataHoje)}<br>` +
+      `📅 Próxima Limpeza Interna: <strong>${fmt(p.proxima_limpeza_interna)}</strong><br><br>` +
+      `Um e-mail de confirmação foi enviado para a pousada.`;
+  } else if (p.tipo_limpeza === 'Limpeza Externa') {
+    titulo   = 'Limpeza Externa registrada!';
+    detalhe +=
+      `🧹 Limpeza Externa realizada em ${fmt(dataHoje)}<br>` +
+      `🧹 Próxima Limpeza Externa: <strong>${fmt(p.proxima_limpeza_externa)}</strong><br><br>` +
+      `Um e-mail de confirmação foi enviado para a pousada.`;
+  } else {
+    titulo   = 'Manutenção registrada!';
+    detalhe +=
+      `🛠️ ${p.descricao}<br><br>` +
+      `Registrado no histórico. Um e-mail de confirmação foi enviado.`;
+  }
+
+  document.getElementById('sucesso-titulo').textContent = titulo;
+  document.getElementById('sucesso-detalhe').innerHTML  = detalhe;
+}
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Registro de Manutenção – Ar-Condicionado</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: #f0f4f8;
+      color: #222;
+      min-height: 100vh;
+    }
+
+    /* ── CABEÇALHO ── */
+    .header {
+      background: #1F3864;
+      color: white;
+      padding: 16px 20px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-icon { font-size: 28px; }
+    .header h1 { font-size: 16px; font-weight: 700; line-height: 1.3; }
+    .header p  { font-size: 12px; opacity: .75; margin-top: 2px; }
+
+    /* ── CARD DO EQUIPAMENTO ── */
+    .equip-card {
+      background: white;
+      margin: 16px;
+      border-radius: 12px;
+      padding: 16px;
+      border-left: 5px solid #2E75B6;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    .equip-card h2 {
+      font-size: 20px;
+      color: #1F3864;
+      font-weight: 800;
+    }
+    .equip-card .local {
+      font-size: 15px;
+      color: #555;
+      margin-top: 2px;
+    }
+    .equip-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .badge {
+      background: #EFF4FB;
+      color: #1F3864;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    /* ── FORMULÁRIO ── */
+    .form-section {
+      background: white;
+      margin: 0 16px 16px;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    .form-section h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1F3864;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #EFF4FB;
+    }
+
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 6px;
+    }
+    .field label .req { color: #e53935; margin-left: 2px; }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid #d0d8e4;
+      border-radius: 8px;
+      font-size: 15px;
+      color: #222;
+      background: #fff;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: border-color .2s;
+    }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      outline: none;
+      border-color: #2E75B6;
+      box-shadow: 0 0 0 3px rgba(46,117,182,.12);
+    }
+    .field textarea { resize: vertical; min-height: 80px; }
+    .field input[type="date"] { color: #222; }
+
+    /* ── BOTÃO ENVIAR ── */
+    .btn-submit {
+      display: block;
+      width: calc(100% - 32px);
+      margin: 0 16px 32px;
+      padding: 16px;
+      background: #1F3864;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: .3px;
+      transition: background .2s, transform .1s;
+    }
+    .btn-submit:active { transform: scale(.98); background: #16284a; }
+    .btn-submit:disabled { background: #90a4c8; cursor: default; }
+
+    /* ── TELA DE SUCESSO ── */
+    #tela-sucesso {
+      display: none;
+      text-align: center;
+      padding: 60px 32px;
+    }
+    .sucesso-icon { font-size: 72px; margin-bottom: 16px; }
+    .sucesso-titulo {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1F3864;
+      margin-bottom: 8px;
+    }
+    .sucesso-msg {
+      font-size: 15px;
+      color: #555;
+      line-height: 1.5;
+    }
+    .btn-nova {
+      margin-top: 28px;
+      display: inline-block;
+      background: #2E75B6;
+      color: white;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+    }
+
+    /* ── TELA DE ERRO ── */
+    .msg-erro {
+      display: none;
+      background: #fff3f3;
+      border: 1.5px solid #e53935;
+      color: #c62828;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 14px;
+      margin: 0 16px 16px;
+    }
+
+    /* LOADING */
+    .spinner {
+      display: inline-block;
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── DATA LIMITE ── */
+    .data-limite-box {
+      background: #EFF4FB;
+      border: 1.5px solid #2E75B6;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1F3864;
+    }
+    .data-limite-box.vencida {
+      background: #fff3f3;
+      border-color: #e53935;
+      color: #c62828;
+    }
+    .data-limite-box.urgente {
+      background: #fff8e1;
+      border-color: #f57c00;
+      color: #e65100;
+    }
+
+    /* ── CARDS DE OPÇÃO ── */
+    .opcoes-manutencao {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .opcao-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 18px;
+      border: 2px solid #d0d8e4;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: border-color .2s, background .2s, box-shadow .2s;
+      position: relative;
+    }
+    .opcao-card input[type="radio"] {
+      width: 22px; height: 22px;
+      accent-color: #1F3864;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .opcao-card .opcao-texto {
+      flex: 1;
+    }
+    .opcao-card .opcao-titulo {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1F3864;
+      display: block;
+    }
+    .opcao-card .opcao-desc {
+      font-size: 13px;
+      color: #666;
+      margin-top: 2px;
+      display: block;
+    }
+    .opcao-card:has(input:checked) {
+      border-color: #1F3864;
+      background: #EFF4FB;
+      box-shadow: 0 0 0 3px rgba(31,56,100,.08);
+    }
+    .opcao-card .opcao-icone {
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- CABEÇALHO -->
+<div class="header">
+  <div class="header-icon">❄️</div>
+  <div>
+    <h1>Registro de Manutenção</h1>
+    <p>Pousada Marie Claire</p>
+  </div>
+</div>
+
+<!-- ====== TELA PRINCIPAL (formulário) ====== -->
+<div id="tela-form">
+
+  <!-- Card do equipamento (preenchido via JS pelo parâmetro ?id=) -->
+  <div class="equip-card">
+    <h2 id="equip-id">Carregando…</h2>
+    <div class="local" id="equip-local"></div>
+    <div class="equip-info" id="equip-badges"></div>
+  </div>
+
+  <!-- Mensagem de erro (oculta por padrão) -->
+  <div class="msg-erro" id="msg-erro"></div>
+
+  <form id="form-limpeza" novalidate>
+
+    <!-- Seção: Situação atual -->
+    <div class="form-section">
+      <h3>📊 Situação Atual</h3>
+
+      <div class="field">
+        <label>📅 Próxima Limpeza Interna</label>
+        <div id="data-limite-box" class="data-limite-box">—</div>
+      </div>
+
+      <div class="field">
+        <label>🧹 Próxima Limpeza Externa</label>
+        <div id="data-filtro-box" class="data-limite-box">—</div>
+      </div>
+    </div>
+
+    <!-- Seção: Que manutenção foi realizada? -->
+    <div class="form-section">
+      <h3>🔧 Que manutenção foi realizada?</h3>
+
+      <div class="field">
+        <div class="opcoes-manutencao">
+
+          <label class="opcao-card" id="opt-interna">
+            <input type="radio" name="tipo_limpeza" value="Limpeza Interna" id="radio-interna" onchange="onTipoChange()">
             <span class="opcao-icone">🔧</span>
             <span class="opcao-texto">
               <span class="opcao-titulo">Limpeza Interna</span>
