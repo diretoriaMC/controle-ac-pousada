@@ -3,6 +3,643 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Registro de ManutenÃ§Ã£o â Ar-Condicionado</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: #f0f4f8;
+      color: #222;
+      min-height: 100vh;
+    }
+
+    /* ââ CABEÃALHO ââ */
+    .header {
+      background: #1F3864;
+      color: white;
+      padding: 16px 20px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-icon { font-size: 28px; }
+    .header h1 { font-size: 16px; font-weight: 700; line-height: 1.3; }
+    .header p  { font-size: 12px; opacity: .75; margin-top: 2px; }
+
+    /* ââ CARD DO EQUIPAMENTO ââ */
+    .equip-card {
+      background: white;
+      margin: 16px;
+      border-radius: 12px;
+      padding: 16px;
+      border-left: 5px solid #2E75B6;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    .equip-card h2 {
+      font-size: 20px;
+      color: #1F3864;
+      font-weight: 800;
+    }
+    .equip-card .local {
+      font-size: 15px;
+      color: #555;
+      margin-top: 2px;
+    }
+    .equip-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .badge {
+      background: #EFF4FB;
+      color: #1F3864;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    /* ââ FORMULÃRIO ââ */
+    .form-section {
+      background: white;
+      margin: 0 16px 16px;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    .form-section h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1F3864;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #EFF4FB;
+    }
+
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 6px;
+    }
+    .field label .req { color: #e53935; margin-left: 2px; }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid #d0d8e4;
+      border-radius: 8px;
+      font-size: 15px;
+      color: #222;
+      background: #fff;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: border-color .2s;
+    }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      outline: none;
+      border-color: #2E75B6;
+      box-shadow: 0 0 0 3px rgba(46,117,182,.12);
+    }
+    .field textarea { resize: vertical; min-height: 80px; }
+    .field input[type="date"] { color: #222; }
+
+    /* ââ BOTÃO ENVIAR ââ */
+    .btn-submit {
+      display: block;
+      width: calc(100% - 32px);
+      margin: 0 16px 32px;
+      padding: 16px;
+      background: #1F3864;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: .3px;
+      transition: background .2s, transform .1s;
+    }
+    .btn-submit:active { transform: scale(.98); background: #16284a; }
+    .btn-submit:disabled { background: #90a4c8; cursor: default; }
+
+    /* ââ TELA DE SUCESSO ââ */
+    #tela-sucesso {
+      display: none;
+      text-align: center;
+      padding: 60px 32px;
+    }
+    .sucesso-icon { font-size: 72px; margin-bottom: 16px; }
+    .sucesso-titulo {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1F3864;
+      margin-bottom: 8px;
+    }
+    .sucesso-msg {
+      font-size: 15px;
+      color: #555;
+      line-height: 1.5;
+    }
+    .btn-nova {
+      margin-top: 28px;
+      display: inline-block;
+      background: #2E75B6;
+      color: white;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+    }
+
+    /* ââ TELA DE ERRO ââ */
+    .msg-erro {
+      display: none;
+      background: #fff3f3;
+      border: 1.5px solid #e53935;
+      color: #c62828;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 14px;
+      margin: 0 16px 16px;
+    }
+
+    /* LOADING */
+    .spinner {
+      display: inline-block;
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ââ DATA LIMITE ââ */
+    .data-limite-box {
+      background: #EFF4FB;
+      border: 1.5px solid #2E75B6;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1F3864;
+    }
+    .data-limite-box.vencida {
+      background: #fff3f3;
+      border-color: #e53935;
+      color: #c62828;
+    }
+    .data-limite-box.urgente {
+      background: #fff8e1;
+      border-color: #f57c00;
+      color: #e65100;
+    }
+
+    /* ââ CARDS DE OPÃÃO ââ */
+    .opcoes-manutencao {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .opcao-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 18px;
+      border: 2px solid #d0d8e4;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: border-color .2s, background .2s, box-shadow .2s;
+      position: relative;
+    }
+    .opcao-card input[type="radio"] {
+      width: 22px; height: 22px;
+      accent-color: #1F3864;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .opcao-card .opcao-texto {
+      flex: 1;
+    }
+    .opcao-card .opcao-titulo {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1F3864;
+      display: block;
+    }
+    .opcao-card .opcao-desc {
+      font-size: 13px;
+      color: #666;
+      margin-top: 2px;
+      display: block;
+    }
+    .opcao-card:has(input:checked) {
+      border-color: #1F3864;
+      background: #EFF4FB;
+      box-shadow: 0 0 0 3px rgba(31,56,100,.08);
+    }
+    .opcao-card .opcao-icone {
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- CABEÃALHO -->
+<div class="header">
+  <div class="header-icon">âï¸</div>
+  <div>
+    <h1>Registro de ManutenÃ§Ã£o</h1>
+    <p>Pousada Marie Claire</p>
+  </div>
+</div>
+
+<!-- ====== TELA PRINCIPAL (formulÃ¡rio) ====== -->
+<div id="tela-form">
+
+  <!-- Card do equipamento (preenchido via JS pelo parÃ¢metro ?id=) -->
+  <div class="equip-card">
+    <h2 id="equip-id">Carregandoâ¦</h2>
+    <div class="local" id="equip-local"></div>
+    <div class="equip-info" id="equip-badges"></div>
+  </div>
+
+  <!-- Mensagem de erro (oculta por padrÃ£o) -->
+  <div class="msg-erro" id="msg-erro"></div>
+
+  <form id="form-limpeza" novalidate>
+
+    <!-- SeÃ§Ã£o: SituaÃ§Ã£o atual -->
+    <div class="form-section">
+      <h3>ð SituaÃ§Ã£o Atual</h3>
+
+      <div class="field">
+        <label>ð PrÃ³xima Limpeza Interna</label>
+        <div id="data-limite-box" class="data-limite-box">â</div>
+      </div>
+
+      <div class="field">
+        <label>ð§¹ PrÃ³xima Limpeza Externa</label>
+        <div id="data-filtro-box" class="data-limite-box">â</div>
+      </div>
+    </div>
+
+    <!-- SeÃ§Ã£o: Que manutenÃ§Ã£o foi realizada? -->
+    <div class="form-section">
+      <h3>ð§ Que manutenÃ§Ã£o foi realizada?</h3>
+
+      <div class="field">
+        <div class="opcoes-manutencao">
+
+          <label class="opcao-card" id="opt-interna">
+            <input type="radio" name="tipo_limpeza" value="Limpeza Interna" id="radio-interna" onchange="onTipoChange()">
+            <span class="opcao-icone">ð¿</span>
+            <span class="opcao-texto">
+              <span class="opcao-titulo">Limpeza Interna</span>
+              <span class="opcao-desc">Limpeza completa do equipamento Â· atualiza prazo de 6 meses</span>
+            </span>
+          </label>
+
+          <label class="opcao-card" id="opt-externa">
+            <input type="radio" name="tipo_limpeza" value="Limpeza Externa" id="radio-externa" onchange="onTipoChange()">
+            <span class="opcao-icone">ð§½</span>
+            <span class="opcao-texto">
+              <span class="opcao-titulo">Limpeza Externa</span>
+              <span class="opcao-desc">Limpeza do filtro / parte externa Â· atualiza prazo de 14 dias</span>
+            </span>
+          </label>
+
+          <label class="opcao-card" id="opt-outra">
+            <input type="radio" name="tipo_limpeza" value="Outra" id="radio-outra" onchange="onTipoChange()">
+            <span class="opcao-icone">ð ï¸</span>
+            <span class="opcao-texto">
+              <span class="opcao-titulo">Outra manutenÃ§Ã£o</span>
+              <span class="opcao-desc">Corretiva, reparo, recarga de gÃ¡s etc. Â· registra no histÃ³rico</span>
+            </span>
+          </label>
+
+        </div>
+      </div>
+
+      <!-- Campo "O que foi feito?" â aparece para Outra -->
+      <div id="campos-outra" style="display:none">
+        <div class="field">
+          <label>O que foi feito?<span class="req">*</span></label>
+          <input type="text" id="descricao_outra" name="descricao_outra"
+            placeholder="Ex: Recarga de gÃ¡s, reparo no compressorâ¦">
+        </div>
+      </div>
+
+      <!-- Campo DescriÃ§Ã£o â aparece para Limpeza Interna e Limpeza Externa -->
+      <div id="campos-limpeza" style="display:none">
+        <div class="field">
+          <label>ObservaÃ§Ãµes da limpeza</label>
+          <textarea id="descricao_limpeza" name="descricao_limpeza"
+            placeholder="Descreva o que foi feito, condiÃ§Ãµes encontradasâ¦"></textarea>
+        </div>
+      </div>
+
+      <!-- Campos comuns -->
+      <div id="campos-comuns" style="display:none">
+        <div class="field">
+          <label>PeÃ§as trocadas</label>
+          <input type="text" id="pecas" name="pecas"
+            placeholder="Ex: Filtro de ar, capacitorâ¦ ou deixe em branco">
+        </div>
+
+        <div class="field">
+          <label>ObservaÃ§Ãµes adicionais</label>
+          <textarea id="observacoes" name="observacoes"
+            placeholder="Algo importante a registrarâ¦"></textarea>
+        </div>
+      </div>
+
+    </div>
+
+  </form>
+
+  <button class="btn-submit" id="btn-enviar" onclick="enviarFormulario()">
+    â Registrar ManutenÃ§Ã£o
+  </button>
+
+</div><!-- /tela-form -->
+
+
+<!-- ====== TELA DE SUCESSO ====== -->
+<div id="tela-sucesso">
+  <div class="sucesso-icon">â</div>
+  <div class="sucesso-titulo" id="sucesso-titulo">ManutenÃ§Ã£o registrada!</div>
+  <div class="sucesso-msg" id="sucesso-detalhe"></div>
+  <button class="btn-nova" onclick="location.reload()">Registrar outra manutenÃ§Ã£o</button>
+</div>
+
+
+<script>
+// âââââââââââââââââââââââââââââââââââââââââââââ
+// CONFIGURAÃÃO
+// âââââââââââââââââââââââââââââââââââââââââââââ
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwcbDQDbgBSUncvq85RzPtxcWWxHg_BL_a9KvyVDAbKN8T7Ps7JMhCx8n1Mr5WgSgXSCQ/exec';
+const EMAIL_NOTIFICACAO = 'diretoria@pousadamarieclaire.com';
+// âââââââââââââââââââââââââââââââââââââââââââââ
+
+// ââ CatÃ¡logo de equipamentos â carregado dinamicamente do Apps Script ââ
+// Para adicionar ou remover ACs, edite a aba "Equipamentos" na planilha do Google Sheets.
+let EQUIPAMENTOS = {};
+
+// ââ Helpers de data ââ
+const hoje = new Date();
+hoje.setHours(0,0,0,0);
+
+function isoParaDate(iso) {
+  const [y,m,d] = iso.split('-');
+  return new Date(+y, +m-1, +d);
+}
+function dateParaIso(d) {
+  return d.toISOString().split('T')[0];
+}
+function fmt(iso) {
+  const [y,m,d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+}
+
+// ââ Preencher card do equipamento ââ
+const params  = new URLSearchParams(window.location.search);
+const equipId = (params.get('id') || '').toUpperCase();
+let equip     = null;
+
+// Carrega lista de equipamentos do Apps Script e inicializa o formulÃ¡rio
+fetch(SCRIPT_URL + '?acao=equipamentos')
+  .then(r => r.json())
+  .then(resp => {
+    if (resp.status === 'ok') {
+      resp.equipamentos.forEach(e => {
+        EQUIPAMENTOS[e.id] = { local: e.local, tipo: e.andar };
+      });
+    }
+  })
+  .catch(() => {})
+  .finally(() => {
+    equip = EQUIPAMENTOS[equipId];
+    inicializarFormulario();
+  });
+
+function inicializarFormulario() {
+
+// ParÃ¢metros de datas vindos da URL
+// ?ultima=YYYY-MM-DD  â data da Ãºltima Limpeza Interna
+// ?filtro=YYYY-MM-DD  â data da Ãºltima Limpeza Externa
+const ultimaParam = params.get('ultima');
+const filtroParam = params.get('filtro');
+
+const ultimaData = ultimaParam ? isoParaDate(ultimaParam) : (() => {
+  const d = new Date(hoje); d.setMonth(d.getMonth() - 6); return d;
+})();
+const filtroData = filtroParam ? isoParaDate(filtroParam) : (() => {
+  const d = new Date(hoje); d.setDate(d.getDate() - 14); return d;
+})();
+
+// PrÃ³xima Limpeza Interna = Ãºltima + 6 meses
+const proximaInterna = new Date(ultimaData);
+proximaInterna.setMonth(proximaInterna.getMonth() + 6);
+const proximaInternaIso = dateParaIso(proximaInterna);
+
+// PrÃ³xima Limpeza Externa = Ãºltima + 14 dias
+const proximaExterna = new Date(filtroData);
+proximaExterna.setDate(proximaExterna.getDate() + 14);
+const proximaExternaIso = dateParaIso(proximaExterna);
+
+// PrÃ³ximas datas APÃS realizaÃ§Ã£o hoje
+const novaProximaInterna = new Date(hoje);
+novaProximaInterna.setMonth(novaProximaInterna.getMonth() + 6);
+const novaProximaInternaIso = dateParaIso(novaProximaInterna);
+
+const novaProximaExterna = new Date(hoje);
+novaProximaExterna.setDate(novaProximaExterna.getDate() + 14);
+const novaProximaExternaIso = dateParaIso(novaProximaExterna);
+
+const dataHoje = dateParaIso(hoje);
+
+if (equip) {
+  document.getElementById('equip-id').textContent    = equipId;
+  document.getElementById('equip-local').textContent = equip.local;
+  document.getElementById('equip-badges').innerHTML  =
+    `<span class="badge">ð¨ ${equip.tipo}</span>` +
+    `<span class="badge">âï¸ Ar-Condicionado Split</span>`;
+} else {
+  document.getElementById('equip-id').textContent    = 'Equipamento nÃ£o identificado';
+  document.getElementById('equip-local').textContent = 'Verifique se o QR Code estÃ¡ correto.';
+}
+
+// ââ Helper para exibir box de data com alerta ââ
+function exibirBoxData(elId, dataAlvo, limiteUrgente) {
+  const box = document.getElementById(elId);
+  const iso = dateParaIso(dataAlvo);
+  const dias = Math.round((dataAlvo - hoje) / 86400000);
+  let label = '';
+  if (dias < 0) {
+    box.classList.add('vencida');
+    label = ` Â· â VENCIDA hÃ¡ ${Math.abs(dias)} dia(s)`;
+  } else if (dias <= limiteUrgente) {
+    box.classList.add('urgente');
+    label = ` Â· â ï¸ ${dias} dia(s) restante(s)`;
+  } else {
+    label = ` Â· â ${dias} dia(s) restante(s)`;
+  }
+  box.textContent = fmt(iso) + label;
+}
+
+exibirBoxData('data-limite-box', proximaInterna,  30);
+exibirBoxData('data-filtro-box', proximaExterna,   3);
+
+// ââ Mostrar/ocultar campos conforme seleÃ§Ã£o ââ
+function onTipoChange() {
+  const tipo = document.querySelector('input[name="tipo_limpeza"]:checked')?.value;
+  document.getElementById('campos-outra').style.display   = tipo === 'Outra'          ? 'block' : 'none';
+  document.getElementById('campos-limpeza').style.display = (tipo === 'Limpeza Interna' || tipo === 'Limpeza Externa') ? 'block' : 'none';
+  document.getElementById('campos-comuns').style.display  = tipo ? 'block' : 'none';
+}
+
+// ââ Envio do formulÃ¡rio ââ
+function enviarFormulario() {
+  const msgErro = document.getElementById('msg-erro');
+  msgErro.style.display = 'none';
+
+  const tipo = document.querySelector('input[name="tipo_limpeza"]:checked')?.value;
+  if (!tipo) {
+    msgErro.textContent = 'â ï¸ Selecione que tipo de manutenÃ§Ã£o foi realizada.';
+    msgErro.style.display = 'block';
+    document.getElementById('opt-interna').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  // Validar campo obrigatÃ³rio para "Outra"
+  if (tipo === 'Outra') {
+    const el = document.getElementById('descricao_outra');
+    if (!el.value.trim()) {
+      el.style.borderColor = '#e53935';
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.focus();
+      return;
+    }
+    el.style.borderColor = '';
+  }
+
+  // Loading
+  const btn = document.getElementById('btn-enviar');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Enviandoâ¦';
+
+  // Determinar datas a atualizar conforme tipo
+  let dataLimpezaInterna    = 'â';
+  let novaProxInternaEnvio  = proximaInternaIso;  // mantÃ©m atual se nÃ£o for Interna
+  let dataLimpezaExterna    = 'â';
+  let novaProxExternaEnvio  = proximaExternaIso;  // mantÃ©m atual se nÃ£o for Externa
+
+  if (tipo === 'Limpeza Interna') {
+    dataLimpezaInterna   = dataHoje;
+    novaProxInternaEnvio = novaProximaInternaIso;
+  } else if (tipo === 'Limpeza Externa') {
+    dataLimpezaExterna   = dataHoje;
+    novaProxExternaEnvio = novaProximaExternaIso;
+  }
+
+  const descricaoLimpeza = document.getElementById('descricao_limpeza')?.value.trim() || 'â';
+  const descricaoOutra   = document.getElementById('descricao_outra')?.value.trim()   || 'â';
+  const descricaoFinal   = tipo === 'Outra' ? descricaoOutra : (descricaoLimpeza || 'â');
+
+  const payload = {
+    equipamento_id:          equipId,
+    local:                   equip ? equip.local : 'â',
+    tipo_limpeza:            tipo,
+    data_limpeza_interna:    dataLimpezaInterna,
+    proxima_limpeza_interna: novaProxInternaEnvio,
+    data_limpeza_externa:    dataLimpezaExterna,
+    proxima_limpeza_externa: novaProxExternaEnvio,
+    descricao:               descricaoFinal,
+    pecas:                   document.getElementById('pecas')?.value.trim()        || 'â',
+    observacoes:             document.getElementById('observacoes')?.value.trim()  || 'â',
+    email_notificacao:       EMAIL_NOTIFICACAO,
+  };
+
+  // Enviar para Google Apps Script
+  fetch(SCRIPT_URL, {
+    method:  'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body:    JSON.stringify(payload),
+  })
+  .then(r => r.json())
+  .then(resp => {
+    if (resp.status === 'ok') {
+      mostrarSucesso(payload);
+    } else {
+      throw new Error(resp.msg || 'Erro desconhecido');
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    msgErro.textContent = 'â ï¸ Erro ao enviar. Verifique sua conexÃ£o e tente novamente.';
+    msgErro.style.display = 'block';
+    btn.disabled = false;
+    btn.innerHTML = 'â Registrar ManutenÃ§Ã£o';
+  });
+}
+
+function mostrarSucesso(p) {
+  document.getElementById('tela-form').style.display = 'none';
+  const tela = document.getElementById('tela-sucesso');
+  tela.style.display = 'block';
+
+  let titulo  = 'ManutenÃ§Ã£o registrada!';
+  let detalhe = `<strong>${equipId} Â· ${p.local}</strong><br><br>`;
+
+  if (p.tipo_limpeza === 'Limpeza Interna') {
+    titulo   = 'Limpeza Interna registrada!';
+    detalhe +=
+      `ð§ Limpeza Interna realizada em ${fmt(dataHoje)}<br>` +
+      `ð PrÃ³xima Limpeza Interna: <strong>${fmt(p.proxima_limpeza_interna)}</strong><br><br>` +
+      `Um e-mail de confirmaÃ§Ã£o foi enviado para a pousada.`;
+  } else if (p.tipo_limpeza === 'Limpeza Externa') {
+    titulo   = 'Limpeza Externa registrada!';
+    detalhe +=
+      `ð§¹ Limpeza Externa realizada em ${fmt(dataHoje)}<br>` +
+      `ð§¹ PrÃ³xima Limpeza Externa: <strong>${fmt(p.proxima_limpeza_externa)}</strong><br><br>` +
+      `Um e-mail de confirmaÃ§Ã£o foi enviado para a pousada.`;
+  } else {
+    titulo   = 'ManutenÃ§Ã£o registrada!';
+    detalhe +=
+      `ð ï¸ ${p.descricao}<br><br>` +
+      `Registrado no histÃ³rico. Um e-mail de confirmaÃ§Ã£o foi enviado.`;
+  }
+
+  document.getElementById('sucesso-titulo').textContent = titulo;
+  document.getElementById('sucesso-detalhe').innerHTML  = detalhe;
+}
+
+} // fim inicializarFormulario()
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>Registro de Manutenção – Ar-Condicionado</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
