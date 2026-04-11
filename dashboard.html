@@ -14,7 +14,6 @@
       min-height: 100vh;
     }
 
-    /* ── CABEÇALHO ── */
     .header {
       background: #1F3864;
       color: white;
@@ -30,203 +29,187 @@
     .btn-refresh {
       background: rgba(255,255,255,.15);
       border: 1px solid rgba(255,255,255,.3);
-      color: white;
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      color: white; padding: 8px 14px; border-radius: 8px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
     }
     .btn-refresh:active { background: rgba(255,255,255,.25); }
 
-    /* ── ATUALIZADO EM ── */
-    .atualizado {
-      text-align: center;
-      font-size: 11px;
-      color: #888;
-      padding: 8px 16px 4px;
-    }
-
-    /* ── RESUMO RÁPIDO (pills) ── */
-    .resumo {
+    .tabs {
       display: flex;
-      gap: 10px;
-      padding: 12px 16px 4px;
-      overflow-x: auto;
+      background: #162d52;
+      padding: 0 16px;
     }
+    .tab {
+      padding: 12px 18px;
+      font-size: 13px; font-weight: 600;
+      color: rgba(255,255,255,.6);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: color .2s, border-color .2s;
+      white-space: nowrap;
+    }
+    .tab.ativo { color: white; border-bottom-color: #4fc3f7; }
+
+    .atualizado { text-align: center; font-size: 11px; color: #888; padding: 8px 16px 4px; }
+
+    .resumo { display: flex; gap: 10px; padding: 12px 16px 4px; overflow-x: auto; }
     .resumo-pill {
-      flex-shrink: 0;
-      border-radius: 20px;
-      padding: 8px 16px;
-      font-size: 13px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      flex-shrink: 0; border-radius: 20px; padding: 8px 16px;
+      font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px;
     }
-    .pill-vencido  { background: #FDECEA; color: #b71c1c; }
-    .pill-urgente  { background: #FFF3E0; color: #e65100; }
-    .pill-semana   { background: #EFF4FB; color: #1F3864; }
+    .pill-vencido { background: #FDECEA; color: #b71c1c; }
+    .pill-urgente { background: #FFF3E0; color: #e65100; }
+    .pill-semana  { background: #EFF4FB; color: #1F3864; }
 
-    /* ── SEÇÃO ── */
-    .secao {
-      margin: 14px 16px 0;
-    }
+    .secao { margin: 14px 16px 0; }
     .secao-titulo {
-      font-size: 13px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-      color: #555;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      font-size: 13px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .5px; color: #555; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
     }
-    .badge-count {
-      background: #1F3864;
-      color: white;
-      border-radius: 20px;
-      padding: 2px 8px;
-      font-size: 11px;
-    }
+    .badge-count { background: #1F3864; color: white; border-radius: 20px; padding: 2px 8px; font-size: 11px; }
 
-    /* ── CARD DE AC ── */
     .ac-card {
-      background: white;
-      border-radius: 12px;
-      padding: 14px 16px;
-      margin-bottom: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,.07);
-      border-left: 5px solid #ccc;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
+      background: white; border-radius: 12px; padding: 14px 16px;
+      margin-bottom: 10px; box-shadow: 0 2px 6px rgba(0,0,0,.07);
+      border-left: 5px solid #ccc; display: flex; flex-direction: column; gap: 6px;
     }
-    .ac-card.vencido  { border-left-color: #e53935; }
-    .ac-card.urgente  { border-left-color: #f57c00; }
-    .ac-card.atencao  { border-left-color: #fbc02d; }
-    .ac-card.ok       { border-left-color: #43a047; }
-
-    .ac-card-topo {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-    .ac-id {
-      font-size: 11px;
-      font-weight: 700;
-      color: #888;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-    }
-    .ac-local {
-      font-size: 16px;
-      font-weight: 800;
-      color: #1F3864;
-      margin-top: 1px;
-    }
-    .ac-andar {
-      font-size: 12px;
-      color: #777;
-    }
-    .status-badge {
-      flex-shrink: 0;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
-    }
+    .ac-card.vencido { border-left-color: #e53935; }
+    .ac-card.urgente { border-left-color: #f57c00; }
+    .ac-card.atencao { border-left-color: #fbc02d; }
+    .ac-card.ok      { border-left-color: #43a047; }
+    .ac-card-topo { display: flex; justify-content: space-between; align-items: flex-start; }
+    .ac-id { font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: .5px; }
+    .ac-local { font-size: 16px; font-weight: 800; color: #1F3864; margin-top: 1px; }
+    .ac-andar { font-size: 12px; color: #777; }
+    .status-badge { flex-shrink: 0; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
     .status-badge.vencido { background: #FDECEA; color: #b71c1c; }
     .status-badge.urgente { background: #FFF3E0; color: #e65100; }
     .status-badge.atencao { background: #FFFDE7; color: #f57f17; }
     .status-badge.ok      { background: #E8F5E9; color: #2e7d32; }
-
-    .ac-tarefas {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      margin-top: 2px;
-    }
-    .tarefa-linha {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 13px;
-    }
+    .status-badge.sem_data { background: #f0f4f8; color: #888; }
+    .ac-tarefas { display: flex; flex-direction: column; gap: 4px; margin-top: 2px; }
+    .tarefa-linha { display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
     .tarefa-tipo { color: #444; display: flex; align-items: center; gap: 5px; }
     .tarefa-data { font-weight: 700; color: #222; }
-    .tarefa-dias {
-      font-size: 11px;
-      padding: 2px 7px;
-      border-radius: 12px;
-      font-weight: 600;
-      margin-left: 6px;
-    }
+    .tarefa-dias { font-size: 11px; padding: 2px 7px; border-radius: 12px; font-weight: 600; margin-left: 6px; }
     .dias-vencido { background: #FDECEA; color: #b71c1c; }
     .dias-urgente { background: #FFF3E0; color: #e65100; }
     .dias-atencao { background: #FFFDE7; color: #f57f17; }
     .dias-ok      { background: #E8F5E9; color: #2e7d32; }
 
-    /* ── ESTADO VAZIO ── */
-    .vazio {
-      text-align: center;
-      padding: 28px 20px;
-      color: #aaa;
-      font-size: 14px;
-    }
-    .vazio-icon { font-size: 40px; margin-bottom: 8px; }
+    #aba-pavimentos { display: none; }
 
-    /* ── LOADING / ERRO ── */
-    .loading {
-      text-align: center;
-      padding: 60px 20px;
-      color: #888;
-      font-size: 15px;
+    .pavimento-secao { margin: 14px 16px 0; }
+    .pavimento-titulo {
+      font-size: 14px; font-weight: 800;
+      padding: 10px 14px; background: #1F3864; color: white;
+      border-radius: 10px 10px 0 0;
+      display: flex; align-items: center; justify-content: space-between;
     }
+    .pavimento-titulo span { font-size: 12px; opacity: .75; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+
+    .ac-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 8px; background: white; padding: 12px;
+      border-radius: 0 0 10px 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.07); margin-bottom: 16px;
+    }
+    .ac-mini {
+      border-radius: 10px; padding: 12px 10px; cursor: pointer;
+      border: 2px solid #e0e8f0; background: #f8fafc;
+      transition: transform .15s, box-shadow .15s, border-color .15s;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .ac-mini:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.12); border-color: #2E75B6; }
+    .ac-mini.vencido { border-color: #e53935; background: #fff5f5; }
+    .ac-mini.urgente { border-color: #f57c00; background: #fffbf5; }
+    .ac-mini.atencao { border-color: #fbc02d; background: #fffef5; }
+    .ac-mini.ok      { border-color: #43a047; background: #f5fff6; }
+    .ac-mini-id { font-size: 10px; font-weight: 700; color: #888; letter-spacing: .5px; }
+    .ac-mini-local { font-size: 12px; font-weight: 700; color: #1F3864; line-height: 1.3; }
+    .ac-mini-status { margin-top: 4px; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 8px; display: inline-block; width: fit-content; }
+    .ac-mini-status.vencido { background: #FDECEA; color: #b71c1c; }
+    .ac-mini-status.urgente { background: #FFF3E0; color: #e65100; }
+    .ac-mini-status.atencao { background: #FFFDE7; color: #f57f17; }
+    .ac-mini-status.ok      { background: #E8F5E9; color: #2e7d32; }
+    .ac-mini-status.sem_data { background: #f0f4f8; color: #aaa; }
+
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.5); z-index: 100;
+      align-items: flex-end; justify-content: center;
+    }
+    .modal-overlay.aberto { display: flex; }
+    .modal {
+      background: white; border-radius: 20px 20px 0 0;
+      width: 100%; max-width: 600px; max-height: 85vh;
+      overflow-y: auto; padding: 0 0 32px;
+      animation: slideUp .25s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .modal-header {
+      position: sticky; top: 0;
+      background: #1F3864; color: white; padding: 16px 20px;
+      border-radius: 20px 20px 0 0;
+      display: flex; align-items: flex-start; justify-content: space-between;
+    }
+    .modal-header h2 { font-size: 17px; font-weight: 800; }
+    .modal-header p  { font-size: 12px; opacity: .75; margin-top: 2px; }
+    .modal-fechar {
+      background: rgba(255,255,255,.2); border: none; color: white;
+      width: 30px; height: 30px; border-radius: 50%; font-size: 16px;
+      cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    }
+    .modal-body { padding: 16px 20px; }
+    .modal-status-row { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+    .modal-status-card {
+      flex: 1; min-width: 130px; background: #f8fafc;
+      border-radius: 10px; padding: 12px 14px; border: 1.5px solid #e0e8f0;
+    }
+    .modal-status-card .label { font-size: 11px; color: #888; font-weight: 600; margin-bottom: 4px; }
+    .modal-status-card .valor { font-size: 14px; font-weight: 800; color: #1F3864; }
+    .modal-status-card .dias  { font-size: 12px; color: #888; margin-top: 2px; }
+    .modal-status-card.vencida { border-color: #e53935; background: #fff5f5; }
+    .modal-status-card.vencida .valor { color: #b71c1c; }
+    .modal-status-card.urgente { border-color: #f57c00; background: #fffbf5; }
+    .modal-status-card.urgente .valor { color: #e65100; }
+    .modal-status-card.ok { border-color: #43a047; background: #f5fff6; }
+    .modal-status-card.ok .valor { color: #2e7d32; }
+    .modal-hist-titulo {
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .5px; color: #888; margin-bottom: 10px;
+      padding-bottom: 6px; border-bottom: 1.5px solid #eef2f7;
+    }
+    .hist-item { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid #f0f4f8; }
+    .hist-item:last-child { border-bottom: none; }
+    .hist-icone { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+    .hist-data  { font-size: 11px; color: #888; font-weight: 600; }
+    .hist-tipo  { font-size: 14px; font-weight: 700; color: #1F3864; }
+    .hist-desc  { font-size: 12px; color: #666; margin-top: 2px; }
+    .hist-vazio { text-align: center; padding: 20px; color: #aaa; font-size: 13px; }
+    .btn-registrar {
+      display: block; width: 100%; margin-top: 16px; padding: 14px;
+      background: #1F3864; color: white; border: none; border-radius: 12px;
+      font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none;
+    }
+
+    .vazio { text-align: center; padding: 28px 20px; color: #aaa; font-size: 14px; }
+    .vazio-icon { font-size: 40px; margin-bottom: 8px; }
+    .loading { text-align: center; padding: 60px 20px; color: #888; font-size: 15px; }
     .spinner {
-      display: inline-block;
-      width: 32px; height: 32px;
-      border: 3px solid #d0d8e4;
-      border-top-color: #2E75B6;
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-      margin-bottom: 12px;
+      display: inline-block; width: 32px; height: 32px;
+      border: 3px solid #d0d8e4; border-top-color: #2E75B6;
+      border-radius: 50%; animation: spin .8s linear infinite; margin-bottom: 12px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-
     .erro-box {
-      margin: 16px;
-      background: #fff3f3;
-      border: 1.5px solid #e53935;
-      color: #c62828;
-      border-radius: 10px;
-      padding: 16px;
-      font-size: 14px;
-      text-align: center;
+      margin: 16px; background: #fff3f3; border: 1.5px solid #e53935;
+      color: #c62828; border-radius: 10px; padding: 16px; font-size: 14px; text-align: center;
     }
-
-    /* ── SEPARADOR DE SEMANAS ── */
-    .semana-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: #2E75B6;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-      margin: 14px 0 8px;
-      padding-left: 4px;
-    }
-
-    /* ── RODAPÉ ── */
-    .rodape {
-      text-align: center;
-      font-size: 11px;
-      color: #bbb;
-      padding: 20px 16px 32px;
-    }
+    .rodape { text-align: center; font-size: 11px; color: #bbb; padding: 20px 16px 32px; }
   </style>
 </head>
 <body>
@@ -239,232 +222,267 @@
       <p>Pousada Marie Claire · Ar-Condicionado</p>
     </div>
   </div>
-  <button class="btn-refresh" onclick="carregarDados()">
-    🔄 Atualizar
-  </button>
+  <button class="btn-refresh" onclick="carregarDados()">🔄 Atualizar</button>
+</div>
+
+<div class="tabs">
+  <div class="tab ativo" id="tab-pendencias" onclick="mostrarAba('pendencias')">⚠️ Pendências</div>
+  <div class="tab" id="tab-pavimentos" onclick="mostrarAba('pavimentos')">🏨 Por Pavimento</div>
 </div>
 
 <div id="atualizado" class="atualizado"></div>
 
-<!-- Resumo rápido -->
-<div class="resumo" id="resumo" style="display:none">
-  <div class="resumo-pill pill-vencido" id="pill-vencido">⛔ 0 vencidos</div>
-  <div class="resumo-pill pill-urgente" id="pill-urgente">⚠️ 0 urgentes</div>
-  <div class="resumo-pill pill-semana"  id="pill-semana">📅 0 esta semana</div>
+<div id="aba-pendencias">
+  <div class="resumo" id="resumo" style="display:none">
+    <div class="resumo-pill pill-vencido" id="pill-vencido">⛔ 0 vencidos</div>
+    <div class="resumo-pill pill-urgente" id="pill-urgente">⚠️ 0 esta semana</div>
+    <div class="resumo-pill pill-semana"  id="pill-semana">📅 0 próx. semana</div>
+  </div>
+  <div id="conteudo">
+    <div class="loading"><div class="spinner"></div><div>Carregando dados…</div></div>
+  </div>
 </div>
 
-<!-- Área de conteúdo -->
-<div id="conteudo">
-  <div class="loading">
-    <div class="spinner"></div>
-    <div>Carregando dados…</div>
+<div id="aba-pavimentos">
+  <div id="conteudo-pavimentos">
+    <div class="loading"><div class="spinner"></div><div>Carregando dados…</div></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="fecharModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div>
+        <h2 id="modal-titulo">—</h2>
+        <p id="modal-subtitulo">—</p>
+      </div>
+      <button class="modal-fechar" onclick="fecharModalBtn()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
   </div>
 </div>
 
 <div class="rodape">Painel atualizado em tempo real · Registre via QR Code de cada equipamento</div>
 
 <script>
-// ─────────────────────────────────────────────────────────────────
-// CONFIGURAÇÃO — cole a URL do seu Apps Script aqui
-// ─────────────────────────────────────────────────────────────────
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwcbDQDbgBSUncvq85RzPtxcWWxHg_BL_a9KvyVDAbKN8T7Ps7JMhCx8n1Mr5WgSgXSCQ/exec';
-// ─────────────────────────────────────────────────────────────────
+const BASE_URL   = 'https://diretoriamc.github.io/controle-ac-pousada/';
 
-const BASE_QR_URL = 'https://diretoriamc.github.io/controle-ac-pousada/';
+let todosAcs = [];
+let historico = {};
 
-// ── Helpers ────────────────────────────────────────────────────────
 const hoje = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
 
 function fmtData(iso) {
   if (!iso) return null;
-  const [y, m, d] = iso.split('-');
+  const [y,m,d] = iso.split('-');
   return d ? `${d}/${m}/${y}` : iso;
 }
-
 function diasParaStatus(dias) {
-  if (dias === null) return null;
-  if (dias < 0)       return 'vencido';
-  if (dias <= 7)      return 'urgente';
-  if (dias <= 14)     return 'atencao';
+  if (dias === null || dias === undefined) return 'sem_data';
+  if (dias < 0)   return 'vencido';
+  if (dias <= 7)  return 'urgente';
+  if (dias <= 14) return 'atencao';
   return 'ok';
 }
-
 function statusLabel(s) {
-  return { vencido: '⛔ Vencida', urgente: '⚠️ Urgente', atencao: '🟡 Atenção', ok: '✅ OK', sem_data: '— Sem data' }[s] || s;
+  return { vencido:'⛔ Vencida', urgente:'⚠️ Urgente', atencao:'🟡 Atenção', ok:'✅ OK', sem_data:'— Sem dados' }[s] || s;
 }
-
 function diasLabel(dias) {
-  if (dias === null) return '';
-  if (dias < 0)  return `${Math.abs(dias)}d atraso`;
+  if (dias === null || dias === undefined) return '';
+  if (dias < 0)   return `${Math.abs(dias)}d atraso`;
   if (dias === 0) return 'hoje';
   return `em ${dias}d`;
 }
 
-// ── Renderizar lista de ACs filtrada ──────────────────────────────
-function renderizarCards(acs) {
-  if (!acs.length) {
-    return `<div class="vazio"><div class="vazio-icon">✅</div>Nenhuma manutenção prevista aqui</div>`;
-  }
-
-  return acs.map(ac => {
-    const st = ac.status || 'sem_data';
-
-    // Tarefas a mostrar (apenas as que estão dentro do prazo ou vencidas)
-    const tarefas = [];
-
-    if (ac.diasInterna !== null && ac.diasInterna <= 14) {
-      const ds = diasParaStatus(ac.diasInterna);
-      tarefas.push(`
-        <div class="tarefa-linha">
-          <span class="tarefa-tipo">🚿 Limpeza Interna</span>
-          <span>
-            <span class="tarefa-data">${fmtData(ac.proxInterna) || '—'}</span>
-            <span class="tarefa-dias dias-${ds}">${diasLabel(ac.diasInterna)}</span>
-          </span>
-        </div>`);
-    }
-
-    if (ac.diasExterna !== null && ac.diasExterna <= 14) {
-      const ds = diasParaStatus(ac.diasExterna);
-      tarefas.push(`
-        <div class="tarefa-linha">
-          <span class="tarefa-tipo">🧽 Limpeza Externa</span>
-          <span>
-            <span class="tarefa-data">${fmtData(ac.proxExterna) || '—'}</span>
-            <span class="tarefa-dias dias-${ds}">${diasLabel(ac.diasExterna)}</span>
-          </span>
-        </div>`);
-    }
-
-    // Se não tem nenhuma tarefa pendente, mostrar resumo geral
-    if (!tarefas.length) {
-      if (ac.proxInterna) tarefas.push(`<div class="tarefa-linha"><span class="tarefa-tipo">🚿 Próx. Interna</span><span class="tarefa-data">${fmtData(ac.proxInterna)}</span></div>`);
-      if (ac.proxExterna) tarefas.push(`<div class="tarefa-linha"><span class="tarefa-tipo">🧽 Próx. Externa</span><span class="tarefa-data">${fmtData(ac.proxExterna)}</span></div>`);
-      if (!tarefas.length) tarefas.push(`<div class="tarefa-linha" style="color:#aaa;font-size:12px;">Sem datas registradas — use o QR Code após a primeira manutenção</div>`);
-    }
-
-    return `
-      <div class="ac-card ${st}">
-        <div class="ac-card-topo">
-          <div>
-            <div class="ac-id">${ac.id}</div>
-            <div class="ac-local">${ac.local}</div>
-            <div class="ac-andar">📍 ${ac.andar}</div>
-          </div>
-          <span class="status-badge ${st}">${statusLabel(st)}</span>
-        </div>
-        <div class="ac-tarefas">${tarefas.join('')}</div>
-      </div>`;
-  }).join('');
+function mostrarAba(aba) {
+  document.getElementById('aba-pendencias').style.display  = aba === 'pendencias' ? 'block' : 'none';
+  document.getElementById('aba-pavimentos').style.display  = aba === 'pavimentos'  ? 'block' : 'none';
+  document.getElementById('tab-pendencias').className = 'tab' + (aba === 'pendencias' ? ' ativo' : '');
+  document.getElementById('tab-pavimentos').className  = 'tab' + (aba === 'pavimentos'  ? ' ativo' : '');
 }
 
-// ── Renderizar seção com título ───────────────────────────────────
-function secao(titulo, badgeNum, cor, conteudo) {
-  return `
-    <div class="secao">
-      <div class="secao-titulo" style="color:${cor}">
-        ${titulo}
-        <span class="badge-count" style="background:${cor}">${badgeNum}</span>
-      </div>
-      ${conteudo}
-    </div>`;
-}
-
-// ── Carregar dados do Apps Script ─────────────────────────────────
 function carregarDados() {
   document.getElementById('resumo').style.display = 'none';
   document.getElementById('atualizado').textContent = '';
-  document.getElementById('conteudo').innerHTML = `
-    <div class="loading">
-      <div class="spinner"></div>
-      <div>Carregando dados…</div>
-    </div>`;
+  document.getElementById('conteudo').innerHTML =
+    '<div class="loading"><div class="spinner"></div><div>Carregando dados…</div></div>';
+  document.getElementById('conteudo-pavimentos').innerHTML =
+    '<div class="loading"><div class="spinner"></div><div>Carregando dados…</div></div>';
 
-  fetch(SCRIPT_URL + '?acao=dashboard')
-    .then(r => r.json())
-    .then(resp => {
-      if (resp.status !== 'ok') throw new Error(resp.msg || 'Erro ao carregar dados');
-      renderizar(resp);
-    })
-    .catch(err => {
-      console.error(err);
-      document.getElementById('conteudo').innerHTML = `
-        <div class="erro-box">
-          ⚠️ Não foi possível carregar os dados.<br>
-          <small style="opacity:.7">${err.message}</small><br><br>
-          <strong>Verifique se o Apps Script foi reimplantado com o novo código.</strong>
-        </div>`;
-    });
+  Promise.all([
+    fetch(SCRIPT_URL + '?acao=dashboard').then(r => r.json()),
+    fetch(SCRIPT_URL + '?acao=historico').then(r => r.json()).catch(() => ({ status: 'ok', historico: {} }))
+  ])
+  .then(([respDash, respHist]) => {
+    if (respDash.status !== 'ok') throw new Error(respDash.msg || 'Erro');
+    todosAcs  = respDash.acs || [];
+    historico = respHist.historico || {};
+    document.getElementById('atualizado').textContent = `Atualizado: ${respDash.geradoEm || '—'}`;
+    renderizarPendencias(respDash);
+    renderizarPavimentos();
+  })
+  .catch(err => {
+    const erroHtml = `<div class="erro-box">⚠️ Não foi possível carregar os dados.<br><small>${err.message}</small></div>`;
+    document.getElementById('conteudo').innerHTML = erroHtml;
+    document.getElementById('conteudo-pavimentos').innerHTML = erroHtml;
+  });
 }
 
-// ── Renderizar toda a tela com os dados ──────────────────────────
-function renderizar(resp) {
+function renderizarPendencias(resp) {
   const acs = resp.acs || [];
-  const agora = hoje();
-  const fimSemana1 = new Date(agora); fimSemana1.setDate(agora.getDate() + 7);
-  const fimSemana2 = new Date(agora); fimSemana2.setDate(agora.getDate() + 14);
+  const vencidos   = acs.filter(a => a.status === 'vencido');
+  const estaSemana = acs.filter(a => { const d = Math.min(a.diasInterna ?? 999, a.diasExterna ?? 999); return d >= 0 && d <= 7; });
+  const proxSemana = acs.filter(a => { const d = Math.min(a.diasInterna ?? 999, a.diasExterna ?? 999); return d >= 8 && d <= 14; });
 
-  // Separar grupos
-  const vencidos  = acs.filter(a => a.status === 'vencido');
-  const urgentes  = acs.filter(a => a.status === 'urgente');
-
-  // Esta semana e próxima semana: ACs com algo vencendo nos próximos 14 dias
-  // (já inclui urgentes, que são 0-7 dias — mas mostramos separado)
-  // Aqui: "esta semana" = 0-7 dias, "próxima semana" = 8-14 dias
-  const estaSemana = acs.filter(a => {
-    const d = Math.min(
-      a.diasInterna !== null ? a.diasInterna : 999,
-      a.diasExterna !== null ? a.diasExterna : 999
-    );
-    return d >= 0 && d <= 7;
-  });
-
-  const proxSemana = acs.filter(a => {
-    const d = Math.min(
-      a.diasInterna !== null ? a.diasInterna : 999,
-      a.diasExterna !== null ? a.diasExterna : 999
-    );
-    return d >= 8 && d <= 14;
-  });
-
-  // Atualizar pills
   document.getElementById('pill-vencido').textContent = `⛔ ${vencidos.length} vencido${vencidos.length !== 1 ? 's' : ''}`;
   document.getElementById('pill-urgente').textContent = `⚠️ ${estaSemana.length} esta semana`;
   document.getElementById('pill-semana').textContent  = `📅 ${proxSemana.length} próx. semana`;
   document.getElementById('resumo').style.display = 'flex';
 
-  // Atualizado em
-  document.getElementById('atualizado').textContent = `Atualizado: ${resp.geradoEm || '—'}`;
-
-  // Montar HTML
   let html = '';
+  if (vencidos.length)   html += secaoPend('🔴 Vencidos — fazer agora', vencidos.length, '#b71c1c', vencidos);
+  if (estaSemana.length) html += secaoPend('🟠 Esta semana (próximos 7 dias)', estaSemana.length, '#e65100', estaSemana);
+  if (proxSemana.length) html += secaoPend('🟡 Próxima semana (8–14 dias)', proxSemana.length, '#f57f17', proxSemana);
 
-  if (vencidos.length) {
-    html += secao('🔴 Vencidos — fazer agora', vencidos.length, '#b71c1c', renderizarCards(vencidos));
-  }
-
-  if (estaSemana.length) {
-    html += secao('🟠 Esta semana (próximos 7 dias)', estaSemana.length, '#e65100', renderizarCards(estaSemana));
-  }
-
-  if (proxSemana.length) {
-    html += secao('🟡 Próxima semana (8–14 dias)', proxSemana.length, '#f57f17', renderizarCards(proxSemana));
-  }
-
-  if (!vencidos.length && !estaSemana.length && !proxSemana.length) {
+  if (!html) {
     html = `<div class="vazio" style="margin-top:40px">
       <div class="vazio-icon">✅</div>
       <strong>Tudo em dia!</strong><br>
       Nenhuma manutenção prevista para os próximos 14 dias.
     </div>`;
   }
-
-  html += '<div style="height:16px"></div>';
-
-  document.getElementById('conteudo').innerHTML = html;
+  document.getElementById('conteudo').innerHTML = html + '<div style="height:16px"></div>';
 }
 
-// ── Auto-atualizar a cada 5 minutos ──────────────────────────────
+function secaoPend(titulo, n, cor, acs) {
+  const cards = acs.map(ac => {
+    const st = ac.status || 'sem_data';
+    const tarefas = [];
+    if (ac.diasInterna !== null && ac.diasInterna !== undefined && ac.diasInterna <= 14) {
+      const ds = diasParaStatus(ac.diasInterna);
+      tarefas.push(`<div class="tarefa-linha"><span class="tarefa-tipo">🚿 Limpeza Interna</span><span><span class="tarefa-data">${fmtData(ac.proxInterna)||'—'}</span><span class="tarefa-dias dias-${ds}">${diasLabel(ac.diasInterna)}</span></span></div>`);
+    }
+    if (ac.diasExterna !== null && ac.diasExterna !== undefined && ac.diasExterna <= 14) {
+      const ds = diasParaStatus(ac.diasExterna);
+      tarefas.push(`<div class="tarefa-linha"><span class="tarefa-tipo">🧽 Limpeza Externa</span><span><span class="tarefa-data">${fmtData(ac.proxExterna)||'—'}</span><span class="tarefa-dias dias-${ds}">${diasLabel(ac.diasExterna)}</span></span></div>`);
+    }
+    if (!tarefas.length) {
+      if (ac.proxInterna) tarefas.push(`<div class="tarefa-linha"><span class="tarefa-tipo">🚿 Próx. Interna</span><span class="tarefa-data">${fmtData(ac.proxInterna)}</span></div>`);
+      if (ac.proxExterna) tarefas.push(`<div class="tarefa-linha"><span class="tarefa-tipo">🧽 Próx. Externa</span><span class="tarefa-data">${fmtData(ac.proxExterna)}</span></div>`);
+      if (!tarefas.length) tarefas.push(`<div class="tarefa-linha" style="color:#aaa;font-size:12px;">Sem datas registradas</div>`);
+    }
+    return `<div class="ac-card ${st}" onclick="abrirModal('${ac.id}')" style="cursor:pointer">
+      <div class="ac-card-topo">
+        <div><div class="ac-id">${ac.id}</div><div class="ac-local">${ac.local}</div><div class="ac-andar">📍 ${ac.andar}</div></div>
+        <span class="status-badge ${st}">${statusLabel(st)}</span>
+      </div>
+      <div class="ac-tarefas">${tarefas.join('')}</div>
+    </div>`;
+  }).join('');
+
+  return `<div class="secao">
+    <div class="secao-titulo" style="color:${cor}">${titulo} <span class="badge-count" style="background:${cor}">${n}</span></div>
+    ${cards}
+  </div>`;
+}
+
+function renderizarPavimentos() {
+  if (!todosAcs.length) {
+    document.getElementById('conteudo-pavimentos').innerHTML =
+      '<div class="vazio" style="margin-top:40px"><div class="vazio-icon">❓</div>Nenhum equipamento encontrado.</div>';
+    return;
+  }
+
+  const grupos = {};
+  const ordemAndares = ['Térreo', '1º Andar', '2º Andar', '3º Andar'];
+  todosAcs.forEach(ac => {
+    const andar = ac.andar || 'Outros';
+    if (!grupos[andar]) grupos[andar] = [];
+    grupos[andar].push(ac);
+  });
+
+  const andares = ordemAndares.filter(a => grupos[a]).concat(Object.keys(grupos).filter(a => !ordemAndares.includes(a)));
+
+  let html = '';
+  andares.forEach(andar => {
+    const acs = grupos[andar];
+    const vencidos = acs.filter(a => a.status === 'vencido').length;
+    const urgentes = acs.filter(a => a.status === 'urgente').length;
+    let alertaAndar = '';
+    if (vencidos) alertaAndar = `<span style="background:#e53935;color:white;border-radius:12px;padding:2px 8px;font-size:11px;">⛔ ${vencidos} vencido${vencidos>1?'s':''}</span>`;
+    else if (urgentes) alertaAndar = `<span style="background:#f57c00;color:white;border-radius:12px;padding:2px 8px;font-size:11px;">⚠️ ${urgentes} urgente${urgentes>1?'s':''}</span>`;
+
+    const cards = acs.map(ac => {
+      const st = ac.status || 'sem_data';
+      return `<div class="ac-mini ${st}" onclick="abrirModal('${ac.id}')">
+        <div class="ac-mini-id">${ac.id}</div>
+        <div class="ac-mini-local">${ac.local}</div>
+        <div class="ac-mini-status ${st}">${statusLabel(st)}</div>
+      </div>`;
+    }).join('');
+
+    html += `<div class="pavimento-secao">
+      <div class="pavimento-titulo">🏨 ${andar} <span>${acs.length} equipamento${acs.length>1?'s':''} ${alertaAndar}</span></div>
+      <div class="ac-grid">${cards}</div>
+    </div>`;
+  });
+
+  document.getElementById('conteudo-pavimentos').innerHTML = html + '<div style="height:16px"></div>';
+}
+
+function abrirModal(id) {
+  const ac = todosAcs.find(a => a.id === id);
+  if (!ac) return;
+
+  document.getElementById('modal-titulo').textContent    = ac.id + ' — ' + ac.local;
+  document.getElementById('modal-subtitulo').textContent = '📍 ' + ac.andar;
+
+  function cardStatus(label, proxIso, dias) {
+    if (!proxIso) return `<div class="modal-status-card"><div class="label">${label}</div><div class="valor" style="color:#aaa">Sem registro</div><div class="dias">Use o QR Code após a 1ª manutenção</div></div>`;
+    const st = diasParaStatus(dias);
+    const dl = dias < 0 ? `${Math.abs(dias)} dia(s) em atraso` : dias === 0 ? 'Hoje!' : `em ${dias} dia(s)`;
+    const cls = st === 'vencido' ? 'vencida' : st === 'urgente' ? 'urgente' : 'ok';
+    return `<div class="modal-status-card ${cls}"><div class="label">${label}</div><div class="valor">${fmtData(proxIso)}</div><div class="dias">${dl}</div></div>`;
+  }
+
+  const hist = historico[id] || [];
+  let histHtml = hist.length
+    ? hist.slice().reverse().map(h => {
+        const icone = h.tipo === 'Limpeza Interna' ? '🚿' : h.tipo === 'Limpeza Externa' ? '🧽' : '🛠️';
+        return `<div class="hist-item">
+          <div class="hist-icone">${icone}</div>
+          <div>
+            <div class="hist-data">${h.data||'—'}</div>
+            <div class="hist-tipo">${h.tipo}</div>
+            ${h.descricao && h.descricao !== '—' ? `<div class="hist-desc">${h.descricao}</div>` : ''}
+            ${h.pecas && h.pecas !== '—' ? `<div class="hist-desc">🔩 Peças: ${h.pecas}</div>` : ''}
+          </div>
+        </div>`;
+      }).join('')
+    : '<div class="hist-vazio">Nenhuma manutenção registrada ainda</div>';
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="modal-status-row">
+      ${cardStatus('🚿 Próx. Limpeza Interna', ac.proxInterna, ac.diasInterna)}
+      ${cardStatus('🧽 Próx. Limpeza Externa', ac.proxExterna, ac.diasExterna)}
+    </div>
+    <div class="modal-hist-titulo">📋 Histórico de Manutenções</div>
+    ${histHtml}
+    <a class="btn-registrar" href="${BASE_URL}?id=${id}" target="_blank">➕ Registrar nova manutenção</a>
+  `;
+
+  document.getElementById('modal-overlay').classList.add('aberto');
+}
+
+function fecharModal(event) {
+  if (event.target === document.getElementById('modal-overlay'))
+    document.getElementById('modal-overlay').classList.remove('aberto');
+}
+function fecharModalBtn() {
+  document.getElementById('modal-overlay').classList.remove('aberto');
+}
+
 carregarDados();
 setInterval(carregarDados, 5 * 60 * 1000);
 </script>
