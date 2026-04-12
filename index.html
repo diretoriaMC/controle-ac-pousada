@@ -166,7 +166,7 @@
         <div id="data-limite-box" class="data-limite-box">—</div>
       </div>
       <div class="field">
-        <label>🧹 Próxima Limpeza Externa</label>
+        <label>🧹 Próxima Limpeza Externa e Checagem do Gás</label>
         <div id="data-filtro-box" class="data-limite-box">—</div>
       </div>
     </div>
@@ -184,12 +184,12 @@
             </span>
           </label>
           <label class="opcao-card" id="opt-externa">
-            <input type="radio" name="tipo_limpeza" value="Limpeza Externa" id="radio-externa" onchange="onTipoChange()">
+            <input type="radio" name="tipo_limpeza" value="Limpeza Externa e Checagem do Gás" id="radio-externa" onchange="onTipoChange()">
             <span class="opcao-check"></span>
             <span class="opcao-icone">🧽</span>
             <span class="opcao-texto">
-              <span class="opcao-titulo">Limpeza Externa</span>
-              <span class="opcao-desc">Limpeza do filtro / parte externa · próxima em 14 dias</span>
+              <span class="opcao-titulo">Limpeza Externa e Checagem do Gás</span>
+              <span class="opcao-desc">Limpeza do filtro, carenagem, dreno e parte externa · próxima em 28 dias</span>
             </span>
           </label>
           <label class="opcao-card" id="opt-outra">
@@ -339,7 +339,7 @@ function inicializarFormulario(equip) {
   var novaProxInternaIso = dateParaIso(novaProxInterna);
 
   var novaProxExterna = new Date(hoje);
-  novaProxExterna.setDate(novaProxExterna.getDate() + 14);
+  novaProxExterna.setDate(novaProxExterna.getDate() + 28);
   var novaProxExternaIso = dateParaIso(novaProxExterna);
 
   var dataHojeIso = dateParaIso(hoje);
@@ -355,8 +355,8 @@ function inicializarFormulario(equip) {
     if (tipo === 'Limpeza Interna') {
       label.textContent = 'Observações da limpeza interna';
       textarea.placeholder = 'Descreva o que foi feito, condições encontradas…';
-    } else if (tipo === 'Limpeza Externa') {
-      label.textContent = 'Observações da limpeza externa';
+    } else if (tipo === 'Limpeza Externa e Checagem do Gás') {
+      label.textContent = 'Observações da limpeza externa e checagem do gás';
       textarea.placeholder = 'Descreva o que foi feito, condições encontradas…';
     } else {
       label.textContent = 'O que foi feito? *';
@@ -443,8 +443,8 @@ function inicializarFormulario(equip) {
     if (p.tipo_limpeza === 'Limpeza Interna') {
       titulo = 'Limpeza Interna registrada!';
       detalhe += '🔧 Realizada em ' + isoParaBr(dataHojeIso) + '<br>📅 Próxima: <strong>' + isoParaBr(p.proxima_limpeza_interna) + '</strong>';
-    } else if (p.tipo_limpeza === 'Limpeza Externa') {
-      titulo = 'Limpeza Externa registrada!';
+    } else if (p.tipo_limpeza === 'Limpeza Externa e Checagem do Gás') {
+      titulo = 'Limpeza Externa e Checagem do Gás registrada!';
       detalhe += '🧹 Realizada em ' + isoParaBr(dataHojeIso) + '<br>🧹 Próxima: <strong>' + isoParaBr(p.proxima_limpeza_externa) + '</strong>';
     } else {
       titulo = 'Manutenção registrada!';
