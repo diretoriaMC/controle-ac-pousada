@@ -135,6 +135,106 @@
       text-align: center; padding: 40px 20px;
       color: #555; font-size: 15px;
     }
+
+    /* ── SEÇÃO DE FOTOS ─────────────────────────────────────────── */
+    .foto-area {
+      border: 2px dashed #d0d8e4;
+      border-radius: 12px;
+      padding: 0;
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+    .foto-area.tem-foto { border-color: #43a047; border-style: solid; }
+    .foto-area.erro-foto { border-color: #e53935 !important; border-style: solid !important; }
+
+    .foto-botoes {
+      display: flex;
+      gap: 0;
+    }
+    .btn-foto {
+      flex: 1;
+      padding: 18px 10px;
+      border: none;
+      background: #f8fafc;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1F3864;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: background .2s;
+    }
+    .btn-foto:first-child { border-radius: 10px 0 0 10px; border-right: 1px solid #e0e8f0; }
+    .btn-foto:last-child  { border-radius: 0 10px 10px 0; }
+    .btn-foto:hover { background: #EFF4FB; }
+    .btn-foto .icone { font-size: 28px; }
+    .btn-foto .legenda { font-size: 12px; color: #666; font-weight: 400; }
+
+    .fotos-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px;
+      background: #f8fafc;
+      border-top: 1px solid #e0e8f0;
+    }
+    .fotos-preview:empty { display: none; }
+    .preview-item {
+      position: relative;
+      width: 90px; height: 90px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid #43a047;
+      flex-shrink: 0;
+    }
+    .preview-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .preview-remover {
+      position: absolute; top: 3px; right: 3px;
+      background: rgba(0,0,0,.6); color: white;
+      border: none; border-radius: 50%;
+      width: 22px; height: 22px;
+      font-size: 12px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      line-height: 1;
+    }
+    .foto-contador {
+      padding: 8px 12px;
+      background: #f8fafc;
+      border-top: 1px solid #e0e8f0;
+      font-size: 12px;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .foto-contador.ok    { color: #2e7d32; }
+    .foto-contador.erro  { color: #c62828; }
+
+    .upload-progress {
+      display: none;
+      margin: 0 16px 16px;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      text-align: center;
+    }
+    .progress-titulo { font-size: 15px; font-weight: 700; color: #1F3864; margin-bottom: 12px; }
+    .progress-bar-wrap {
+      background: #e0e8f0; border-radius: 20px;
+      height: 10px; overflow: hidden; margin-bottom: 8px;
+    }
+    .progress-bar {
+      height: 100%; background: #2E75B6;
+      border-radius: 20px; width: 0%;
+      transition: width .3s;
+    }
+    .progress-msg { font-size: 13px; color: #666; }
   </style>
 </head>
 <body>
@@ -151,6 +251,9 @@
     ← Painel
   </a>
 </div>
+
+<input type="file" id="input-camera"  accept="image/*" capture="environment" multiple style="display:none" onchange="adicionarFotos(this)">
+<input type="file" id="input-galeria" accept="image/*" multiple style="display:none" onchange="adicionarFotos(this)">
 
 <div id="tela-carregando" class="carregando">
   <div style="font-size:40px;margin-bottom:12px">⏳</div>
@@ -176,6 +279,7 @@
         <div id="data-filtro-box" class="data-limite-box">—</div>
       </div>
     </div>
+
     <div class="form-section">
       <h3>🔧 Que manutenção foi realizada?</h3>
       <div class="field">
@@ -226,7 +330,40 @@
         </div>
       </div>
     </div>
+
+    <div class="form-section">
+      <h3>📷 Fotos da Manutenção <span style="color:#e53935;font-size:11px;font-weight:700;letter-spacing:0;text-transform:none;margin-left:4px;">Obrigatório</span></h3>
+      <div class="field">
+        <label style="margin-bottom:10px;">Adicione ao menos 1 foto do equipamento após a manutenção</label>
+        <div class="foto-area" id="foto-area">
+          <div class="foto-botoes">
+            <button type="button" class="btn-foto" onclick="document.getElementById('input-camera').click()">
+              <span class="icone">📸</span>
+              <span>Tirar Foto</span>
+              <span class="legenda">Abrir câmera</span>
+            </button>
+            <button type="button" class="btn-foto" onclick="document.getElementById('input-galeria').click()">
+              <span class="icone">🖼️</span>
+              <span>Da Galeria</span>
+              <span class="legenda">Escolher arquivo</span>
+            </button>
+          </div>
+          <div class="fotos-preview" id="fotos-preview"></div>
+          <div class="foto-contador" id="foto-contador">
+            📎 Nenhuma foto adicionada ainda
+          </div>
+        </div>
+      </div>
+    </div>
+
   </form>
+
+  <div class="upload-progress" id="upload-progress">
+    <div class="progress-titulo">📤 Enviando registro e fotos…</div>
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+    <div class="progress-msg" id="progress-msg">Preparando…</div>
+  </div>
+
   <button class="btn-submit" id="btn-enviar" onclick="enviarFormulario()">
     ✅ Registrar Manutenção
   </button>
@@ -248,15 +385,75 @@ const equipId = (params.get('id') || '').toUpperCase();
 const hoje = new Date();
 hoje.setHours(0, 0, 0, 0);
 
-// Converte dd/MM/yyyy → Date
+var fotosCapturadas = [];
+
+function adicionarFotos(input) {
+  var files = Array.from(input.files || []);
+  if (!files.length) return;
+  var pendentes = files.length;
+  files.forEach(function(file, idx) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var img = new Image();
+      img.onload = function() {
+        var MAX = 1200;
+        var w = img.width, h = img.height;
+        if (w > MAX || h > MAX) {
+          if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+          else       { w = Math.round(w * MAX / h); h = MAX; }
+        }
+        var canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        var b64 = canvas.toDataURL('image/jpeg', 0.82);
+        var nome = 'foto_' + (fotosCapturadas.length + 1) + '_' + Date.now() + '.jpg';
+        fotosCapturadas.push({ base64: b64, name: nome });
+        pendentes--;
+        if (pendentes === 0) renderizarPreview();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+}
+
+function removerFoto(idx) {
+  fotosCapturadas.splice(idx, 1);
+  renderizarPreview();
+}
+
+function renderizarPreview() {
+  var container = document.getElementById('fotos-preview');
+  var contador  = document.getElementById('foto-contador');
+  var fotoArea  = document.getElementById('foto-area');
+  container.innerHTML = fotosCapturadas.map(function(f, i) {
+    return '<div class="preview-item">' +
+      '<img src="' + f.base64 + '" alt="Foto ' + (i+1) + '">' +
+      '<button class="preview-remover" type="button" onclick="removerFoto(' + i + ')">✕</button>' +
+    '</div>';
+  }).join('');
+  if (fotosCapturadas.length === 0) {
+    contador.textContent = '📎 Nenhuma foto adicionada ainda';
+    contador.className = 'foto-contador';
+    fotoArea.className = 'foto-area';
+  } else {
+    contador.textContent = '✅ ' + fotosCapturadas.length + ' foto(s) adicionada(s)';
+    contador.className = 'foto-contador ok';
+    fotoArea.className = 'foto-area tem-foto';
+  }
+}
+
 function brParaDate(br) {
   if (!br || br.trim() === '' || br === '—') return null;
-  var p = br.split('/');
-  if (p.length === 3) return new Date(parseInt(p[2]), parseInt(p[1]) - 1, parseInt(p[0]));
+  var s = br.split('T')[0];
+  var p = s.indexOf('/') !== -1 ? s.split('/') : null;
+  if (p && p.length === 3) return new Date(parseInt(p[2]), parseInt(p[1]) - 1, parseInt(p[0]));
+  var q = s.split('-');
+  if (q.length === 3) return new Date(parseInt(q[0]), parseInt(q[1]) - 1, parseInt(q[2]));
   return null;
 }
 
-// Converte Date → ISO yyyy-mm-dd
 function dateParaIso(d) {
   if (!d) return '';
   var mm = ('0' + (d.getMonth() + 1)).slice(-2);
@@ -264,21 +461,19 @@ function dateParaIso(d) {
   return d.getFullYear() + '-' + mm + '-' + dd;
 }
 
-// Converte ISO yyyy-mm-dd → dd/MM/yyyy
 function isoParaBr(iso) {
   if (!iso || iso === '—') return '';
-  var p = iso.split('-');
+  var s = iso.split('T')[0];
+  var p = s.split('-');
   if (p.length === 3) return p[2] + '/' + p[1] + '/' + p[0];
   return iso;
 }
 
-// Converte Date → dd/MM/yyyy
 function dateToBr(d) {
   if (!d) return '';
   return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '/' + d.getFullYear();
 }
 
-// Busca dados do equipamento direto da planilha (inclui datas)
 fetch(SCRIPT_URL + '?id=' + equipId)
   .then(function(r) { return r.json(); })
   .then(function(resp) {
@@ -291,7 +486,7 @@ fetch(SCRIPT_URL + '?id=' + equipId)
     }
     inicializarFormulario(resp.equipamento);
   })
-  .catch(function(err) {
+  .catch(function() {
     document.getElementById('tela-carregando').style.display = 'none';
     document.getElementById('equip-id').textContent = 'Erro ao carregar';
     document.getElementById('equip-local').textContent = 'Verifique sua conexão e recarregue a página.';
@@ -299,21 +494,17 @@ fetch(SCRIPT_URL + '?id=' + equipId)
   });
 
 function inicializarFormulario(equip) {
-  // Preencher cabeçalho
   document.getElementById('equip-id').textContent    = equip.id;
   document.getElementById('equip-local').textContent = equip.local;
   document.getElementById('equip-badges').innerHTML  =
     '<span class="badge">🏨 ' + (equip.andar || '') + '</span>' +
     '<span class="badge">❄️ Ar-Condicionado Split</span>';
 
-  // Datas reais da planilha (formato dd/MM/yyyy ou vazio)
   var proxInternaStr = equip.proxInterna || '';
   var proxExternaStr = equip.proxExterna || '';
-
   var dProxInterna = brParaDate(proxInternaStr);
   var dProxExterna = brParaDate(proxExternaStr);
 
-  // Exibir situação atual com datas reais
   function exibirBox(elId, dataAlvo, limiteUrgente) {
     var box = document.getElementById(elId);
     if (!dataAlvo) {
@@ -339,7 +530,6 @@ function inicializarFormulario(equip) {
   exibirBox('data-limite-box', dProxInterna, 30);
   exibirBox('data-filtro-box', dProxExterna, 3);
 
-  // Calcular novas próximas datas após manutenção feita hoje
   var novaProxInterna = new Date(hoje);
   novaProxInterna.setMonth(novaProxInterna.getMonth() + 6);
   var novaProxInternaIso = dateParaIso(novaProxInterna);
@@ -373,6 +563,7 @@ function inicializarFormulario(equip) {
   window.enviarFormulario = function() {
     var msgErro = document.getElementById('msg-erro');
     msgErro.style.display = 'none';
+
     var tipo = (document.querySelector('input[name="tipo_limpeza"]:checked') || {}).value;
     if (!tipo) {
       msgErro.textContent = '⚠️ Selecione que tipo de manutenção foi realizada.';
@@ -390,11 +581,28 @@ function inicializarFormulario(equip) {
       }
       el.style.borderColor = '';
     }
+
+    if (fotosCapturadas.length === 0) {
+      var fotoArea = document.getElementById('foto-area');
+      var contador = document.getElementById('foto-contador');
+      fotoArea.className = 'foto-area erro-foto';
+      contador.textContent = '⚠️ Adicione ao menos 1 foto da manutenção realizada';
+      contador.className = 'foto-contador erro';
+      fotoArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
     var btn = document.getElementById('btn-enviar');
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span>Enviando…';
 
-    // Definir datas a enviar conforme tipo
+    var progBox = document.getElementById('upload-progress');
+    var progBar = document.getElementById('progress-bar');
+    var progMsg = document.getElementById('progress-msg');
+    progBox.style.display = 'block';
+    progBar.style.width = '10%';
+    progMsg.textContent = 'Preparando ' + fotosCapturadas.length + ' foto(s)…';
+
     var dataLimpezaInterna = '—', proxInternaEnvio = proxInternaStr ? dateParaIso(dProxInterna) : '—';
     var dataLimpezaExterna = '—', proxExternaEnvio = proxExternaStr ? dateParaIso(dProxExterna) : '—';
 
@@ -405,6 +613,16 @@ function inicializarFormulario(equip) {
       dataLimpezaExterna = dataHojeIso;
       proxExternaEnvio   = novaProxExternaIso;
     }
+
+    var fotosB64 = fotosCapturadas.map(function(f, i) {
+      return {
+        nome: 'foto_' + (i + 1) + '.jpg',
+        dados: f.base64.split(',')[1]
+      };
+    });
+
+    progBar.style.width = '30%';
+    progMsg.textContent = 'Enviando dados…';
 
     var payload = {
       equipamento_id:           equip.id,
@@ -417,6 +635,7 @@ function inicializarFormulario(equip) {
       descricao:   (document.getElementById('descricao_limpeza') || {}).value || '—',
       pecas:       (document.getElementById('pecas')             || {}).value || '—',
       observacoes: (document.getElementById('observacoes')       || {}).value || '—',
+      fotos:       fotosB64,
     };
 
     fetch(SCRIPT_URL, {
@@ -426,14 +645,17 @@ function inicializarFormulario(equip) {
     })
     .then(function(r) { return r.json(); })
     .then(function(resp) {
+      progBar.style.width = '100%';
       if (resp.status === 'ok') {
-        mostrarSucesso(payload);
+        progMsg.textContent = '✅ Enviado com sucesso!';
+        setTimeout(function() { mostrarSucesso(payload, resp.pastaUrl); }, 600);
       } else {
         throw new Error(resp.msg || 'Erro desconhecido');
       }
     })
     .catch(function(err) {
       console.error(err);
+      progBox.style.display = 'none';
       msgErro.textContent = '⚠️ Erro ao enviar. Verifique sua conexão e tente novamente.';
       msgErro.style.display = 'block';
       btn.disabled = false;
@@ -441,8 +663,9 @@ function inicializarFormulario(equip) {
     });
   };
 
-  function mostrarSucesso(p) {
+  function mostrarSucesso(p, pastaUrl) {
     document.getElementById('tela-form').style.display = 'none';
+    document.getElementById('upload-progress').style.display = 'none';
     document.getElementById('tela-sucesso').style.display = 'block';
     var titulo, detalhe;
     detalhe = '<strong>' + equip.id + ' · ' + equip.local + '</strong><br><br>';
@@ -455,6 +678,10 @@ function inicializarFormulario(equip) {
     } else {
       titulo = 'Manutenção registrada!';
       detalhe += '🛠️ ' + p.descricao;
+    }
+    detalhe += '<br><br>📷 ' + fotosCapturadas.length + ' foto(s) salva(s) no Drive';
+    if (pastaUrl) {
+      detalhe += '<br><a href="' + pastaUrl + '" target="_blank" style="color:#1F3864;font-weight:700;">📂 Ver pasta no Drive</a>';
     }
     document.getElementById('sucesso-titulo').textContent = titulo;
     document.getElementById('sucesso-detalhe').innerHTML  = detalhe;
